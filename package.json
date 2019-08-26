@@ -1,4 +1,6 @@
 {
+  "name": "nea-website",
+  "private": true,
   "license": "MIT",
   "scripts": {
     "build": "node buildScript.js",
