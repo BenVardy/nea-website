@@ -49,9 +49,12 @@ module.exports = {
             }
         ]
     },
+    resolve: {
+        extensions: ['.ts', '.js']
+    },
     devtool: 'inline-source-map',
     devServer: {
-        contenBase: path.resolve(__dirname, 'build/public'),
+        contentBase: path.resolve(__dirname, 'build/public'),
         port: 3000,
         proxy: {
             '/api': {
