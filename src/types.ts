@@ -62,9 +62,4 @@ export interface ISymbolType {
     expr: BaseExpr;
     matrix: InputMatrix;
     no: DigitWrapper;
-}
-
-export interface ISymbolExtract<T extends keyof ISymbolType> {
-    type: T;
-    data: ISymbolType[T];
-}
+};

@@ -6,7 +6,9 @@
     "build": "node buildScript.js",
     "build-server": "tsc",
     "build-web": "webpack",
-    "dev": "concurrently --kill-others-on-fail \"nodemon\" \"webpack-dev-server\" "
+
+    "dev": "concurrently --kill-others-on-fail \"yarn dev:server\" \"webpack-dev-server\" ",
+    "dev:server": "nodemon"
   },
   "devDependencies": {
     "@types/dotenv": "^6.1.1",
