@@ -1,5 +1,5 @@
-import BaseExpr from './models/baseExpr';
 import DigitWrapper from './models/digitWrapper';
+import ExprWrapper from './models/exprWrapper';
 import InputMatrix from './models/inputMatrix';
 import Symbol from './models/symbol';
 
@@ -54,12 +54,12 @@ export interface ISymbolData {
      * @param cursor Only needed for the inputMatrix class
      */
     toLatex(cursor?: boolean): string;
-    extract(): any;
+    toString(): string;
 }
 
 export interface ISymbolType {
     [key: string]: ISymbolData;
-    expr: BaseExpr;
+    expr: ExprWrapper;
     matrix: InputMatrix;
     no: DigitWrapper;
-};
+}

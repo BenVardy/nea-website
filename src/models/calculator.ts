@@ -186,7 +186,9 @@ export default class Calculator implements IModel {
      * Performs the final calculation
      */
     public calculate(): void {
-        throw new Error('Not implemented');
+        let {calculation} = this;
+        let joinedCalc: string = calculation.map(item => item.toString()).join('');
+        fetch(`/api?calc=${encodeURIComponent(joinedCalc)}`);
     }
 
     /**

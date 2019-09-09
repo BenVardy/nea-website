@@ -1,4 +1,4 @@
-import { ISymbolData } from "../types";
+import { ISymbolData } from '../types';
 
 export default class DigitWrapper implements ISymbolData {
     private data: string;
@@ -17,7 +17,7 @@ export default class DigitWrapper implements ISymbolData {
     /**
      * Gets the string representation of the digit
      */
-    public extract(): string {
+    public toString(): string {
         return this.data;
     }
 }

@@ -1,8 +1,7 @@
-import { IController, IModel } from "../types";
-import Symbol from '../models/symbol';
 import DigitWrapper from "../models/digitWrapper";
-import StringExpr from "../models/expressions/stringExpr";
-import MultExpr from "../models/expressions/multExpr";
+import ExprWrapper from '../models/exprWrapper';
+import Symbol from '../models/symbol';
+import { IController, IModel } from "../types";
 
 /**
  * The Controller in the MVC
@@ -70,18 +69,16 @@ export default class Controller implements IController {
             }
         } else {
             if (key.match(/^[\d\.]$/)) {
-                model.addToCalc(new Symbol("no", new DigitWrapper(key)));
-            } else if (key.match(/^[ij]$/)) {
-                /** @todo **REMOVE** */
-                model.addToCalc(new Symbol('expr', new StringExpr(`\\hat{\\${key}math}`)))
-            } else if (key.match(/^[a-z+\-(),]$/)) {
-                model.addToCalc(new Symbol("expr", new StringExpr(key)));
-            } else if (key === '*') {
-                model.addToCalc(new Symbol("expr", new MultExpr()));
+                model.addToCalc(new Symbol('no', new DigitWrapper(key)));
+            } else if (key.match(/^[a-z+*/x\-(),]$/)) {
+                model.addToCalc(new Symbol('expr', new ExprWrapper(key)));
             } else {
                 switch (keyCode) {
                     case 8: // Backspace
                         model.backspace();
+                        break;
+                    case 13: // Return
+                        model.calculate();
                         break;
                     case 37: // Left Arrow
                         model.navLeft();
