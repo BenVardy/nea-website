@@ -1,5 +1,5 @@
-import { Stack } from '..';
-import { ICalc, IExpr, TCalc } from '../../../types';
+import { ICalc, IExpr, TCalc } from '../types';
+import { Stack } from './models';
 
 export default function shuntingYard(calc: TCalc[]): TCalc[] {
     let stack = new Stack<ICalc<'bracket'|'expr'>>();

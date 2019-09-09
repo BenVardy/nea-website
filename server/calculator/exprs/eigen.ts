@@ -10,7 +10,7 @@ export default class Eigen implements IExpr {
     public noParams: number = 1;
     public final: boolean = true;
 
-    public execute(params: TExprParam[]): TExprParam[] {
+    public execute(...params: TExprParam[]): TExprParam[] {
         if (params.length !== 1) throw new Error('Can only have 1 param');
 
         let [param] = params;

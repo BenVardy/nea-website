@@ -1,7 +1,8 @@
 import express from 'express';
+import execCalc from './calculator/execCalc';
 import exprMap from './calculator/exprMap';
 import { Matrix, Vector } from './calculator/models';
-import shuntingYard from './calculator/models/scripts/shuntingYard';
+import shuntingYard from './calculator/shuntingYard';
 import { TCalc } from './types';
 
 function joinRegex(...regex: RegExp[]): RegExp {
@@ -12,25 +13,35 @@ const router = express.Router();
 
 router.use(express.json());
 
-router.post('/', (req, res) => {
-    const NUMBER_REGEX: RegExp = /\d+/;
+router.get('/', (req, res) => {
+    const NUMBER_REGEX: RegExp = /[\d\.]+/;
     const EXPR_REGEX: RegExp = /[a-z*+\-/\^]+/i;
-    const MATRIX_REGEX: RegExp = /\[(\[(\d+,?)+\],?)+\]/;
+    const MATRIX_REGEX: RegExp = /\[(\[([\d\.]+,?)+\],?)+\]/;
+    // same as matrix but with only 1 inner array
+    const VECTOR_REGEX: RegExp = /\[(\[\d+,?\],?)+\]/;
     const BRACKET_REGEX: RegExp = /[\(\)]/;
 
-    let { body } = req;
+    let { query: {calc: body} } = req;
 
-    if (!body.data && typeof(body.data) !== 'string') return res.status(400);
+    if (!body && typeof(body) !== 'string') return res.status(400);
 
-    let partsArr: string[] = body.data.replace(/\s/g, '').replace(/([\d\]\)])([\(\[])/g, '$1*$2').match(joinRegex(
+    let partsArr: string[] | null = body.replace(/[\s]/g, '').replace(/([\d\]\)])([\(\[])/g, '$1*$2').match(joinRegex(
         NUMBER_REGEX,
         EXPR_REGEX,
         MATRIX_REGEX,
         BRACKET_REGEX
     ));
 
+    if (!partsArr) return res.sendStatus(400);
+
     let calc: TCalc[] = partsArr.map(item => {
-        if (item.match(MATRIX_REGEX)) {
+        if (item.match(VECTOR_REGEX)) {
+            return {
+                type: 'vector',
+                // Regex means that there will only be 1 inner array
+                data: new Vector(JSON.parse(item).map((row: number[]) => row[0]))
+            };
+        } else if (item.match(MATRIX_REGEX)) {
             return {
                 type: 'matrix',
                 data: new Matrix(JSON.parse(item))
@@ -54,7 +65,8 @@ router.post('/', (req, res) => {
         }
     });
 
-    console.log(shuntingYard(calc));
+    let postFix: TCalc[] = shuntingYard(calc);
+    console.log(execCalc(postFix));
 
     res.sendStatus(200);
 

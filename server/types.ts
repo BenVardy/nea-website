@@ -22,10 +22,10 @@ export interface IExpr {
      */
     final: boolean;
     /**
-     * Executes the expression
+     * Executes the expression. Params come in backwards
      * @param params The parameters to the expression
      */
-    execute(params: TExprParam[]): TExprParam[];
+    execute(...params: TExprParam[]): TExprParam[];
 }
 
 export interface ICalcData {

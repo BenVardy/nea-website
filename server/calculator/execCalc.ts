@@ -1,4 +1,4 @@
-import { IExpr, IExprParam, TCalc } from '../types';
+import { IExpr, TCalc, TExprParam } from '../types';
 import { Stack } from './models';
 
 function isIExpr(obj: any): obj is IExpr {
@@ -9,26 +9,29 @@ function isIExpr(obj: any): obj is IExpr {
  * Executes the calculation given
  * @param calc The calculation. Should be in RPN
  */
-export default function execCalc(calc: TCalc[]): IExprParam[] {
-    let stack = new Stack<IExprParam>();
+export default function execCalc(calc: TCalc[]): TExprParam[] {
+    let stack = new Stack<TExprParam>();
 
     for (let item of calc) {
-        if (isIExpr(item)) {
-            let params: IExprParam[] = [];
+        if (item.type === 'expr') {
+            let expr: IExpr = item.data as IExpr;
+            let params: TExprParam[] = [];
 
             try {
-                params = stack.pop(item.noParams);
-                if (params.length !== item.noParams) throw new Error('Not enough params');
+                params = stack.pop(expr.noParams);
+                if (params.length !== expr.noParams) throw new Error('Not enough params');
             } catch (ex) {
                 throw ex;
             }
-            let results: IExprParam[] = item.execute(params);
-            if (item.final) return results;
+            let results: TExprParam[] = expr.execute(...params);
+            if (expr.final) return results;
             else stack.push(results[0]);
         } else {
-            stack.push(item);
+            // If type !== 'expr' then it must be one of the others
+            // which are all valid => safe typecast
+            stack.push(item as TExprParam);
         }
     }
 
-    return stack.pop();
+    return stack.popAll();
 }

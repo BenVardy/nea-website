@@ -10,10 +10,11 @@ export default class Plus implements IExpr {
     public noParams: number = 2;
     public final: boolean = false;
 
-    public execute(params: TExprParam[]): TExprParam[] {
+    public execute(...params: TExprParam[]): TExprParam[] {
         if (params.length !== 2) throw new Error('Must have 2 params');
 
-        let [param1, param2] = params;
+        let [param2, param1] = params;
+        console.log(params);
         if (param1.type !== param2.type) throw new Error('Must be the same type');
 
         if (param1.type === 'matrix') {
