@@ -1,24 +1,4 @@
-/**
- * A parameter as part of the request
- */
-export interface IReqParam {
-    type: ('expr'|'matrix'|'no');
-    /**
-     * Should be a string or a string[][]
-     */
-    data: any;
-}
-
-/**
- * A parameter for a calculation
- */
-export interface IExprParam {
-    type: ('matrix'|'no'|'vector');
-    /**
-     * Must be a Matrix, number, or vector
-     */
-    data: any;
-}
+import { Matrix, Vector } from './calculator/models';
 
 /**
  * A server-side expression. Must be stateless
@@ -28,6 +8,10 @@ export interface IExpr {
      * The string representation of the expression
      */
     symbol: string;
+    /**
+     * The precedence of the expr. 0 is the highest
+     */
+    precedence: number;
     /**
      * The number of parameters of the expression
      */
@@ -41,7 +25,22 @@ export interface IExpr {
      * Executes the expression
      * @param params The parameters to the expression
      */
-    execute(params: IExprParam[]): IExprParam[];
+    execute(params: TExprParam[]): TExprParam[];
 }
 
-export type TCalc = IExpr|IExprParam;
+export interface ICalcData {
+    // string in this case should only be '(' or ')'
+    bracket: string;
+    expr: IExpr;
+    matrix: Matrix;
+    no: number;
+    vector: Vector;
+}
+
+export interface ICalc<T extends keyof ICalcData> {
+    type: T;
+    data: ICalcData[T];
+}
+
+export type TCalc = ICalc<keyof ICalcData>;
+export type TExprParam = ICalc<'matrix'|'no'|'vector'>;

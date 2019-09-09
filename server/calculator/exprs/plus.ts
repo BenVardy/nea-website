@@ -1,4 +1,4 @@
-import { IExpr, IExprParam } from '../../types';
+import { IExpr, TExprParam } from '../../types';
 import { Matrix, Vector } from '../models';
 
 /**
@@ -6,10 +6,11 @@ import { Matrix, Vector } from '../models';
  */
 export default class Plus implements IExpr {
     public symbol: string = '+';
+    public precedence: number = 3;
     public noParams: number = 2;
     public final: boolean = false;
 
-    public execute(params: IExprParam[]): IExprParam[] {
+    public execute(params: TExprParam[]): TExprParam[] {
         if (params.length !== 2) throw new Error('Must have 2 params');
 
         let [param1, param2] = params;

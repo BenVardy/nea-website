@@ -1,4 +1,4 @@
-import { IExpr, IExprParam } from '../../types';
+import { IExpr, TExprParam } from '../../types';
 import { Matrix, QR, QR_Result } from '../models';
 
 /**
@@ -6,10 +6,11 @@ import { Matrix, QR, QR_Result } from '../models';
  */
 export default class Eigen implements IExpr {
     public symbol: string = 'eigen';
+    public precedence: number = 0;
     public noParams: number = 1;
     public final: boolean = true;
 
-    public execute(params: IExprParam[]): IExprParam[] {
+    public execute(params: TExprParam[]): TExprParam[] {
         if (params.length !== 1) throw new Error('Can only have 1 param');
 
         let [param] = params;
@@ -23,7 +24,7 @@ export default class Eigen implements IExpr {
             throw ex;
         }
 
-        let output: IExprParam[] = [];
+        let output: TExprParam[] = [];
 
         results.forEach(res => {
             output.push({

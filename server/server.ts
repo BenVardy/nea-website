@@ -2,8 +2,13 @@ import dotenv from 'dotenv';
 import express from 'express';
 import path from 'path';
 
-let app = express();
+import calcapi from './calcapi';
+
 dotenv.config();
+
+let app = express();
+
+app.use('/api', calcapi);
 
 const port = process.env.PORT || 3001;
 

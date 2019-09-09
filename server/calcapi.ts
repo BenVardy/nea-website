@@ -1,48 +1,11 @@
 import express from 'express';
 import exprMap from './calculator/exprMap';
-import { IExpr , IReqParam, TCalc, IExprParam } from './types';
-import { Matrix } from './calculator/models';
+import { Matrix, Vector } from './calculator/models';
+import shuntingYard from './calculator/models/scripts/shuntingYard';
+import { TCalc } from './types';
 
-/**
- * Tests if an object is a ReqParam array
- * @param obj The object to test
- */
-function isReqParamArr(obj: any): obj is IReqParam[] {
-    return (
-        Array.isArray(obj) &&
-        obj.every(elem => {
-            let temp = elem as IReqParam;
-            return (
-                ['expr', 'matrix', 'no'].includes(temp.type) &&
-                temp.data !== undefined
-            );
-        })
-    );
-}
-
-function isStringArrArr(obj: any): obj is string[][] {
-    return (
-        Array.isArray(obj) &&
-        obj.every(row => (
-            Array.isArray(row) &&
-            row.every(val => typeof val === 'string')
-        ))
-    );
-}
-
-/**
- * Joins a string of single expressions into one expression
- * @param currentPos The current Pos in the calculation
- * @param calc The rest of the calculation
- * @param type If we are joining expressions or numbers
- */
-function join(currentPos: number, calc: IReqParam[], type: ('expr'|'no')): string {
-    let current = calc[currentPos];
-
-    if (typeof current.data !== 'string') throw new Error(`Invalid ${type}`);
-    if (!current) return '';
-
-    return current.type === type ? current.data + join(currentPos + 1, calc, type) : '';
+function joinRegex(...regex: RegExp[]): RegExp {
+    return new RegExp(regex.map(item => item.source).join('|'), 'gi');
 }
 
 const router = express.Router();
@@ -50,49 +13,51 @@ const router = express.Router();
 router.use(express.json());
 
 router.post('/', (req, res) => {
+    const NUMBER_REGEX: RegExp = /\d+/;
+    const EXPR_REGEX: RegExp = /[a-z*+\-/\^]+/i;
+    const MATRIX_REGEX: RegExp = /\[(\[(\d+,?)+\],?)+\]/;
+    const BRACKET_REGEX: RegExp = /[\(\)]/;
+
     let { body } = req;
 
-    if (!isReqParamArr(body)) return res.status(400);
+    if (!body.data && typeof(body.data) !== 'string') return res.status(400);
 
-    let calc: TCalc[] = [];
-    let i = 0;
-    while (i < body.length) {
-        let item: IReqParam = body[i];
+    let partsArr: string[] = body.data.replace(/\s/g, '').replace(/([\d\]\)])([\(\[])/g, '$1*$2').match(joinRegex(
+        NUMBER_REGEX,
+        EXPR_REGEX,
+        MATRIX_REGEX,
+        BRACKET_REGEX
+    ));
 
-        switch (item.type) {
-            case 'expr':
-                let joinedExpr: string = join(0, body.slice(i), 'expr');
-                let expr: IExpr|undefined = exprMap[joinedExpr];
-                if (!expr) throw new Error('Invalid Expression');
-                calc.push(expr);
-                i += joinedExpr.length;
-            case 'matrix':
-                if (!isStringArrArr(item.data)) throw new Error('Invalid Matrix');
-                let data: number[][] = item.data.map(row => row.map(val => {
-                    if (isNaN(+val)) throw new Error('Invalid Matrix');
-                    return +val;
-                }));
-                let matrix: Matrix = new Matrix(data);
-                calc.push({
-                    type: matrix.getDim(0) === 2 && matrix.getDim(1) === 1 ? 'vector' : 'matrix',
-                    data: matrix
-                } as IExprParam);
-                i++;
-            case 'no':
-                let joinedNo: string = join(0, body.slice(i), 'no');
-                let no: number = +joinedNo;
-                if (isNaN(no)) throw new Error('Invalid number');
-                calc.push({
-                    type: 'no',
-                    data: no
-                } as IExprParam);
-                i += joinedNo.length;
-            default:
-                throw new Error('Invalid Data');
+    let calc: TCalc[] = partsArr.map(item => {
+        if (item.match(MATRIX_REGEX)) {
+            return {
+                type: 'matrix',
+                data: new Matrix(JSON.parse(item))
+            };
+        } else if (item.match(EXPR_REGEX)) {
+            if (!Object.keys(exprMap).includes(item)) throw new Error('invalid expr');
+            return {
+                type: 'expr',
+                data: exprMap[item]
+            };
+        } else if (item.match(NUMBER_REGEX)) {
+            return {
+                type: 'no',
+                data: +item
+            };
+        } else {
+            return {
+                type: 'bracket',
+                data: item
+            };
         }
-    }
+    });
 
-    
+    console.log(shuntingYard(calc));
+
+    res.sendStatus(200);
+
 });
 
 export default router;
