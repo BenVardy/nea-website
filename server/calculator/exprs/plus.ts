@@ -13,7 +13,7 @@ export default class Plus implements IExpr {
     public execute(...params: TExprParam[]): TExprParam[] {
         if (params.length !== 2) throw new Error('Must have 2 params');
 
-        let [param2, param1] = params;
+        let [param1, param2] = params;
         console.log(params);
         if (param1.type !== param2.type) throw new Error('Must be the same type');
 

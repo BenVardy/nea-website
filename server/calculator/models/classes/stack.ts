@@ -12,14 +12,14 @@ export default class Stack<T> {
         if (this.isEmpty()) throw new Error('Stack is empty');
 
         if (no === undefined) {
-            return this.arr.splice(0, 1)[0];
+            return this.arr.splice(this.arr.length - 1, 1)[0];
         } else {
-            return this.arr.splice(0, Math.min(this.arr.length, no));
+            return this.arr.splice(Math.max(0, this.arr.length - 1 - no), this.arr.length);
         }
     }
 
     public popAll(): T[] {
-        let items: T[] = this.arr.slice();
+        let items: T[] = this.arr.slice().reverse();
         this.arr = [];
         return items;
     }
@@ -30,14 +30,15 @@ export default class Stack<T> {
         if (this.isEmpty()) throw new Error('Stack is empty');
 
         if (no === undefined) {
-            return this.arr.slice(0, 1)[0];
+            return this.arr.slice(this.arr.length - 1)[0];
         } else {
-            return this.arr.slice(0, Math.min(this.arr.length, no));
+            let startPoint: number = Math.max(0, this.arr.length - 1 - no);
+            return this.arr.slice(startPoint);
         }
     }
 
     public push(item: T): void {
-        this.arr.unshift(item);
+        this.arr.push(item);
     }
 
     public isEmpty(): boolean {
