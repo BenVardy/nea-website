@@ -25,12 +25,15 @@ router.get('/', (req, res) => {
 
     if (!body && typeof(body) !== 'string') return res.status(400);
 
-    let partsArr: string[] | null = body.replace(/[\s]/g, '').replace(/([\d\]\)])([\(\[])/g, '$1*$2').match(joinRegex(
-        NUMBER_REGEX,
-        EXPR_REGEX,
-        MATRIX_REGEX,
-        BRACKET_REGEX
-    ));
+    let partsArr: string[] | null = body
+        .replace(/[\s]/g, '')
+        .replace(/([\d\]\)])([\(\[])/g, '$1*$2')
+        .match(joinRegex(
+            NUMBER_REGEX,
+            EXPR_REGEX,
+            MATRIX_REGEX,
+            BRACKET_REGEX
+        ));
 
     if (!partsArr) return res.sendStatus(400);
 
@@ -66,7 +69,7 @@ router.get('/', (req, res) => {
     });
 
     let postFix: TCalc[] = shuntingYard(calc);
-    console.log(execCalc(postFix));
+    console.log(execCalc(postFix).map(val => val.data.toString()));
 
     res.sendStatus(200);
 

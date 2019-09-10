@@ -1,7 +1,7 @@
 import { IExpr, TExprParam } from '../../types';
 import {Matrix, Vector} from '../models';
 
-export default class Times implements IExpr {
+export default class Multiplication implements IExpr {
     public symbol: string = '*';
     public final: boolean = false;
     public noParams: number = 2;

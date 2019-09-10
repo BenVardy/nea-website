@@ -4,7 +4,7 @@ import { Matrix, Vector } from '../models';
 /**
  * Adds things together. Has 2 params
  */
-export default class Plus implements IExpr {
+export default class Addition implements IExpr {
     public symbol: string = '+';
     public precedence: number = 3;
     public noParams: number = 2;
