@@ -63,3 +63,8 @@ export interface ISymbolType {
     matrix: InputMatrix;
     no: DigitWrapper;
 }
+
+export interface IAPIResult {
+    type: 'matrix'|'no'|'vector';
+    data: any;
+}
