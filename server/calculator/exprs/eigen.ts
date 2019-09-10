@@ -33,7 +33,7 @@ export default class Eigen implements IExpr {
             });
 
             output.push({
-                type: 'no',
+                type: 'vector',
                 data: res.eigenvector
             });
         });

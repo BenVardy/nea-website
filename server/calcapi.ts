@@ -3,7 +3,7 @@ import execCalc from './calculator/execCalc';
 import exprMap from './calculator/exprMap';
 import { Matrix, Vector } from './calculator/models';
 import shuntingYard from './calculator/shuntingYard';
-import { TCalc } from './types';
+import { TCalc, TExprParam } from './types';
 
 function joinRegex(...regex: RegExp[]): RegExp {
     return new RegExp(regex.map(item => item.source).join('|'), 'gi');
@@ -69,9 +69,12 @@ router.get('/', (req, res) => {
     });
 
     let postFix: TCalc[] = shuntingYard(calc);
-    console.log(execCalc(postFix).map(val => val.data.toString()));
+    let result: any[] = execCalc(postFix).map(result => ({
+        ...result,
+        data: result.data.toString()
+    }));
 
-    res.sendStatus(200);
+    res.status(200).json(result);
 
 });
 
