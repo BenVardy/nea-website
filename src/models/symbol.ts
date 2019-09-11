@@ -1,4 +1,4 @@
-import { ISymbolType } from "../types";
+import { ISymbolType } from '../types';
 
 export default class Symbol<T extends keyof ISymbolType> {
     public data: ISymbolType[T];
@@ -13,7 +13,7 @@ export default class Symbol<T extends keyof ISymbolType> {
         return this.data.toLatex(inMatrix);
     }
 
-    public extract(): any {
-        return this.data.extract();
+    public toString(): any {
+        return this.data.toString();
     }
 }

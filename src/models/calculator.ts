@@ -1,14 +1,17 @@
 import katex from 'katex';
 
-import { IModel, IObserver, ISymbolType } from '../types';
+import { IModel, IObserver, ISymbolType, IAPIResult } from '../types';
 import InputMatrix from './inputMatrix';
 import Symbol from './symbol';
+import DigitWrapper from './digitWrapper';
 
 export default class Calculator implements IModel {
 
     public inMatrix: boolean;
     // Properties
     private calculation: Array<Symbol<keyof ISymbolType>>;
+    private results: Array<Symbol<keyof ISymbolType>>;
+
     private observers: IObserver[];
 
     private cursor: number;
@@ -20,6 +23,7 @@ export default class Calculator implements IModel {
     public constructor() {
         this.calculation = [];
         this.observers = [];
+        this.results = [];
         this.cursor = 0;
 
         this.inMatrix = false;
@@ -186,7 +190,27 @@ export default class Calculator implements IModel {
      * Performs the final calculation
      */
     public calculate(): void {
-        throw new Error('Not implemented');
+        let {calculation} = this;
+        let joinedCalc: string = calculation.map(item => item.toString()).join('');
+        fetch(`/api?calc=${encodeURIComponent(joinedCalc)}`)
+        .then(res => res.json())
+        .then((json: IAPIResult[]) => {
+            this.results = json.map(result => {
+                console.log(result.type);
+                if (result.type === 'no') {
+                    return new Symbol('no', new DigitWrapper(result.data));
+                } else {
+                    return new Symbol('matrix',
+                        new InputMatrix(
+                                JSON.parse(result.data).map((row: number[]) => (
+                                    row.map((data: number) => data.toString()
+                                )))
+                            )
+                    );
+                }
+            });
+            this.update();
+        });
     }
 
     /**
@@ -194,8 +218,10 @@ export default class Calculator implements IModel {
      */
     public getHtml(): HTMLElement {
         let root: HTMLElement = document.createElement('div');
+        root.className = 'calculator-root';
 
-        root.className = 'calculation';
+        let calculation: HTMLElement = document.createElement('div');
+        calculation.className = 'calculation';
 
         let calcString: string = '';
         if (!this.inMatrix && this.cursor === 0) calcString += '|';
@@ -206,7 +232,20 @@ export default class Calculator implements IModel {
             if (!this.inMatrix && i === this.cursor - 1) calcString += '|';
         }
 
-        katex.render(calcString, root);
+        katex.render(calcString, calculation);
+
+        let resultELem: HTMLElement = document.createElement('div');
+        resultELem.className = 'result';
+
+        let resultString: string = this.results.length > 0 ? '=' : '';
+        for (let result of this.results) {
+            resultString += result.toLatex();
+        }
+
+        katex.render(resultString, resultELem);
+
+        root.appendChild(calculation);
+        root.appendChild(resultELem);
 
         return root;
     }

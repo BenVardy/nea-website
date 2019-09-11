@@ -28,9 +28,8 @@ export default class InputMatrix implements ISymbolData {
         this.arr = arr;
 
         let LargestDim: number = arr.reduce((p, c, i, a) => a[p].length > c.length ? p : i, 0);
-        this.dims = [arr.length, arr[LargestDim].length]
+        this.dims = [arr.length, arr[LargestDim].length];
     }
-
 
     //#region Matrix things
     /**
@@ -41,7 +40,7 @@ export default class InputMatrix implements ISymbolData {
     public _(i: number, j: number): string {
         return this.arr[i][j];
     }
-    
+
     /**
      * Gets the size of the dimension
      * @param n The dimension
@@ -68,7 +67,7 @@ export default class InputMatrix implements ISymbolData {
 
     /**
      * Outputs the latex representation of the matrix
-     * 
+     *
      * @param cursor Whether to display a cursor at the current position or not
      */
     public toLatex(cursor: boolean): string {
@@ -83,13 +82,17 @@ export default class InputMatrix implements ISymbolData {
             \\end{bmatrix}
         `;
     }
-    
+
     /**
      * Returns the string representation of the matrix
      * Does not keep information about location in matrix
      */
-    public extract(): string[][] {
-        return this.getArr();
+    public toString(): string {
+        let innerArr: string[][] = this.getArr();
+
+        if (innerArr.some(row => row.some(item => isNaN(+item)))) throw new Error('invalid matrix');
+
+        return JSON.stringify(this.getArr().map(row => row.map(item => +item)));
     }
 
     /**
@@ -101,7 +104,7 @@ export default class InputMatrix implements ISymbolData {
     //#endregion
 
     //#region Input things
-    
+
     /**
      * Adds the character at the current position
      * @param c The char
@@ -123,7 +126,7 @@ export default class InputMatrix implements ISymbolData {
      * Moves the cursor to the left
      */
     public navLeft(): void {
-        if (this.j > 0) {     
+        if (this.j > 0) {
             let transpose: InputMatrix = this.transposed();
             let transArr: string[][] = transpose.getArr();
             if (transArr[this.j].every(item => item === '') && this.j === transpose.getDim(0) - 1) {
