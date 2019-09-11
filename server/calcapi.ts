@@ -69,10 +69,13 @@ router.get('/', (req, res) => {
     });
 
     let postFix: TCalc[] = shuntingYard(calc);
-    let result: any[] = execCalc(postFix).map(result => ({
-        ...result,
-        data: result.data.toString()
-    }));
+    let result: any[] = execCalc(postFix).map(result => {
+        console.log(result.data.toString());
+        return {
+            type: result.type,
+            data: result.data.toString()
+        };
+    });
 
     res.status(200).json(result);
 
