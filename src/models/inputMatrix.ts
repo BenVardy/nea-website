@@ -6,7 +6,7 @@ export default class InputMatrix {
      * @param o The thing to test
      */
     public static isInputMatrix(o: any): o is InputMatrix {
-        return (o as InputMatrix).transposed !== undefined;
+        return o && (o as InputMatrix).transposed !== undefined;
     }
 
     // Properties

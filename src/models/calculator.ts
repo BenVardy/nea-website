@@ -136,6 +136,8 @@ export default class Calculator implements IModel {
         else {
             this.navRight();
             this.backspace();
+
+            this.inMatrix = false;
         }
         this.update();
     }
@@ -193,7 +195,7 @@ export default class Calculator implements IModel {
      */
     public calculate(): void {
         let {calculation} = this;
-        let joinedCalc: string = calculation.map(item => item.toString()).join('');
+        let joinedCalc: string = this.fixBrackets(calculation.map(item => item.toString()).join(''));
         fetch(`/api?calc=${encodeURIComponent(joinedCalc)}`)
         .then(res => res.json())
         .then((json: IAPIResult[]) => {
@@ -254,7 +256,7 @@ export default class Calculator implements IModel {
      */
     private toLatex(symArr: TSymbol[], showCursor: boolean): string {
 
-        let latexString: string = symArr.map((sym, i) => {
+        let latex: string = symArr.map((sym, i) => {
             let part: string;
             if (typeof(sym) === 'string') {
                 part = sym;
@@ -266,10 +268,28 @@ export default class Calculator implements IModel {
             return part += (showCursor && this.cursor - 1 === i && !this.inMatrix) ? '|' : '';
         }).join('');
 
-        if (showCursor && !this.inMatrix && this.cursor === 0) latexString = '|' + latexString;
+        if (showCursor && !this.inMatrix && this.cursor === 0) latex = '|' + latex;
 
-        latexString = latexString.replace(/\*/, '\\cdot');
+        latex = latex.replace(/\*/g, '\\cdot');
+        latex = this.fixBrackets(latex).replace(/\(/g, '\\left(').replace(/\)/g, '\\right)');
 
-        return latexString;
+        return latex;
+    }
+
+    /**
+     * Adds brackets to the start / end to balance out brackets
+     * @param calc The calculation string
+     */
+    private fixBrackets(calc: string): string {
+        let leftMatch = calc.match(/\(/g);
+        let noLeft: number = leftMatch ? leftMatch.length : 0;
+
+        let rightMatch = calc.match(/\)/g);
+        let noRight: number = rightMatch ? rightMatch.length : 0;
+
+        calc += ')'.repeat(Math.max(0, noLeft - noRight));
+        calc = '('.repeat(Math.max(0, noRight - noLeft)) + calc;
+
+        return calc;
     }
 }
