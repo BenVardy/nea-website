@@ -1,7 +1,4 @@
-import DigitWrapper from "../models/digitWrapper";
-import ExprWrapper from '../models/exprWrapper';
-import Symbol from '../models/symbol';
-import { IController, IModel } from "../types";
+import { IController, IModel } from '../types';
 
 /**
  * The Controller in the MVC
@@ -69,9 +66,12 @@ export default class Controller implements IController {
             }
         } else {
             if (key.match(/^[\d\.]$/)) {
-                model.addToCalc(new Symbol('no', new DigitWrapper(key)));
-            } else if (key.match(/^[a-z+*/x\-(),]$/)) {
-                model.addToCalc(new Symbol('expr', new ExprWrapper(key)));
+                model.addToCalc(key);
+            } else if (key.match(/^[a-z+*/x\-]$/)) {
+                model.addToCalc(key);
+            } else if (key === '(') {
+                model.addToCalc('(', ')');
+                model.navLeft();
             } else {
                 switch (keyCode) {
                     case 8: // Backspace

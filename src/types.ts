@@ -1,7 +1,4 @@
-import DigitWrapper from './models/digitWrapper';
-import ExprWrapper from './models/exprWrapper';
 import InputMatrix from './models/inputMatrix';
-import Symbol from './models/symbol';
 
 export interface IObserver {
     update(source: IObservable): void;
@@ -16,7 +13,7 @@ export interface IObservable {
 export interface IModel extends IObservable {
     inMatrix: boolean;
 
-    addToCalc(s: Symbol<keyof ISymbolType>): void;
+    addToCalc(...s: TSymbol[]): void;
 
     newMatrix(): void;
     /**
@@ -49,22 +46,29 @@ export interface IController {
     parseChar(key: string, keyCode: number): void;
 }
 
-export interface ISymbolData {
-    /**
-     * @param cursor Only needed for the inputMatrix class
-     */
-    toLatex(cursor?: boolean): string;
-    toString(): string;
-}
+// export interface ISymbolData {
+//     /**
+//      * @param cursor Only needed for the inputMatrix class
+//      */
+//     toLatex(cursor?: boolean): string;
+//     toString(): string;
+// }
 
-export interface ISymbolType {
-    [key: string]: ISymbolData;
-    expr: ExprWrapper;
-    matrix: InputMatrix;
-    no: DigitWrapper;
-}
+// export interface ISymbolType {
+//     [key: string]: ISymbolData;
+//     expr: ExprWrapper;
+//     matrix: InputMatrix;
+//     no: DigitWrapper;
+// }
 
 export interface IAPIResult {
     type: 'matrix'|'no'|'vector';
     data: any;
 }
+
+/**
+ * Is either
+ *  - string = number or expr
+ *  - InputMatrix = matrix
+ */
+export type TSymbol = (string|InputMatrix);

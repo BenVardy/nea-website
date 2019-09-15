@@ -1,6 +1,4 @@
-import { ISymbolData } from '../types';
-
-export default class InputMatrix implements ISymbolData {
+export default class InputMatrix {
 
     // Static Methods
     /**
@@ -8,7 +6,7 @@ export default class InputMatrix implements ISymbolData {
      * @param o The thing to test
      */
     public static isInputMatrix(o: any): o is InputMatrix {
-        return (o as InputMatrix).addChar !== undefined;
+        return (o as InputMatrix).transposed !== undefined;
     }
 
     // Properties

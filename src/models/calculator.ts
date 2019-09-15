@@ -1,16 +1,15 @@
 import katex from 'katex';
 
-import { IModel, IObserver, ISymbolType, IAPIResult } from '../types';
+import { IAPIResult, IModel, IObserver, TSymbol } from '../types';
 import InputMatrix from './inputMatrix';
-import Symbol from './symbol';
-import DigitWrapper from './digitWrapper';
+// import DigitWrapper from './digitWrapper';
 
 export default class Calculator implements IModel {
 
     public inMatrix: boolean;
     // Properties
-    private calculation: Array<Symbol<keyof ISymbolType>>;
-    private results: Array<Symbol<keyof ISymbolType>>;
+    private calculation: TSymbol[];
+    private results: TSymbol[];
 
     private observers: IObserver[];
 
@@ -60,9 +59,12 @@ export default class Calculator implements IModel {
      * Adds a new item to the calculation
      * @param s The item to add
      */
-    public addToCalc(s: Symbol<keyof ISymbolType>): void {
-        this.calculation.splice(this.cursor, 0, s);
-        this.cursor++;
+    public addToCalc(...s: TSymbol[]): void {
+
+        for (let item of s) {
+            this.calculation.splice(this.cursor, 0, item);
+            this.cursor++;
+        }
         this.update();
     }
 
@@ -72,7 +74,7 @@ export default class Calculator implements IModel {
     public newMatrix(): void {
         if (this.inMatrix) throw new Error('Must end matrix first');
 
-        this.addToCalc(new Symbol('matrix', new InputMatrix()));
+        this.addToCalc(new InputMatrix());
         // When addToCalc is called it adds 1 to the cursor event thought
         // we haven't moved on so we must fix the cursor by moving it back by 1
         this.cursor--;
@@ -156,7 +158,7 @@ export default class Calculator implements IModel {
 
             let currentItem = this.calculation[this.cursor];
 
-            this.inMatrix = (currentItem && currentItem.type === 'matrix');
+            this.inMatrix = typeof(currentItem) !== 'string';
             this.update();
         }
     }
@@ -166,7 +168,7 @@ export default class Calculator implements IModel {
      */
     public navRight(): void {
         let currentItem = this.calculation[this.cursor];
-        if (!this.inMatrix && currentItem && currentItem.type === 'matrix') this.inMatrix = true;
+        if (!this.inMatrix && currentItem && typeof(currentItem) !== 'string') this.inMatrix = true;
         else if (this.cursor < this.calculation.length) this.cursor++;
         this.update();
     }
@@ -196,16 +198,14 @@ export default class Calculator implements IModel {
         .then(res => res.json())
         .then((json: IAPIResult[]) => {
             this.results = json.map(result => {
-                console.log(result.type);
+                // console.log(result.type);
                 if (result.type === 'no') {
-                    return new Symbol('no', new DigitWrapper(result.data));
+                    return result.data;
                 } else {
-                    return new Symbol('matrix',
-                        new InputMatrix(
-                                JSON.parse(result.data).map((row: number[]) => (
-                                    row.map((data: number) => data.toString()
-                                )))
-                            )
+                    return new InputMatrix(
+                        JSON.parse(result.data).map((row: number[]) => (
+                            row.map((data: number) => data.toString()
+                        )))
                     );
                 }
             });
@@ -223,26 +223,12 @@ export default class Calculator implements IModel {
         let calculation: HTMLElement = document.createElement('div');
         calculation.className = 'calculation';
 
-        let calcString: string = '';
-        if (!this.inMatrix && this.cursor === 0) calcString += '|';
-
-        for (let i = 0; i < this.calculation.length; i++) {
-            let item = this.calculation[i];
-            calcString += item.toLatex((this.inMatrix && i === this.cursor));
-            if (!this.inMatrix && i === this.cursor - 1) calcString += '|';
-        }
-
-        katex.render(calcString, calculation);
+        katex.render(this.toLatex(this.calculation, true), calculation);
 
         let resultELem: HTMLElement = document.createElement('div');
         resultELem.className = 'result';
 
-        let resultString: string = this.results.length > 0 ? '=' : '';
-        for (let result of this.results) {
-            resultString += result.toLatex();
-        }
-
-        katex.render(resultString, resultELem);
+        katex.render(this.toLatex(this.results, false), resultELem);
 
         root.appendChild(calculation);
         root.appendChild(resultELem);
@@ -257,8 +243,33 @@ export default class Calculator implements IModel {
     private getCurrentMatrix(): InputMatrix {
         if (!this.inMatrix) throw new Error('Not in matrix');
         let sym = this.calculation[this.cursor];
-        if (sym && sym.type !== 'matrix') throw new Error('Cursor not in matrix');
+        if (!InputMatrix.isInputMatrix(sym)) throw new Error('Cursor not in matrix');
 
-        return (sym.data as InputMatrix);
+        return sym;
+    }
+
+    /**
+     * Converts an array of numbers, expressions and matrices to latex
+     * @param symArr The array of symbols
+     */
+    private toLatex(symArr: TSymbol[], showCursor: boolean): string {
+
+        let latexString: string = symArr.map((sym, i) => {
+            let part: string;
+            if (typeof(sym) === 'string') {
+                part = sym;
+            } else {
+                // Don't -1 for matrices as it goes in the matrix
+                part = sym.toLatex(showCursor && this.inMatrix && this.cursor === i);
+            }
+
+            return part += (showCursor && this.cursor - 1 === i && !this.inMatrix) ? '|' : '';
+        }).join('');
+
+        if (showCursor && !this.inMatrix && this.cursor === 0) latexString = '|' + latexString;
+
+        latexString = latexString.replace(/\*/, '\\cdot');
+
+        return latexString;
     }
 }
