@@ -265,12 +265,14 @@ export default class Calculator implements IModel {
                 part = sym.toLatex(showCursor && this.inMatrix && this.cursor === i);
             }
 
-            return part += (showCursor && this.cursor - 1 === i && !this.inMatrix) ? '|' : '';
+            return part + (showCursor && !this.inMatrix && this.cursor - 1 === i ? '|' : '');
         }).join('');
 
         if (showCursor && !this.inMatrix && this.cursor === 0) latex = '|' + latex;
 
         latex = latex.replace(/\*/g, '\\cdot');
+        // latex = latex.replace(/\((.*)\)(\|?)\/(\|?)\((.*)\)/g, '\\frac{$1$2}{$3$4}');
+
         latex = this.fixBrackets(latex).replace(/\(/g, '\\left(').replace(/\)/g, '\\right)');
 
         return latex;

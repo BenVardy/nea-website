@@ -67,7 +67,7 @@ export default class Controller implements IController {
         } else {
             if (key.match(/^[\d\.]$/)) {
                 model.addToCalc(key);
-            } else if (key.match(/^[a-z+*/x\-\(\)]$/)) {
+            } else if (key.match(/^[a-z+*/x\-()]$/)) {
                 model.addToCalc(key);
             } else {
                 switch (keyCode) {
