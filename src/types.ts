@@ -30,6 +30,8 @@ export interface IModel extends IObservable {
 
     navLeft(): void;
     navRight(): void;
+    navHome(): void;
+    navEnd(): void;
     backspace(): void;
 
     calculate(): void;

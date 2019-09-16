@@ -2,7 +2,6 @@ import katex from 'katex';
 
 import { IAPIResult, IModel, IObserver, TSymbol } from '../types';
 import InputMatrix from './inputMatrix';
-// import DigitWrapper from './digitWrapper';
 
 export default class Calculator implements IModel {
 
@@ -172,6 +171,16 @@ export default class Calculator implements IModel {
         let currentItem = this.calculation[this.cursor];
         if (!this.inMatrix && currentItem && typeof(currentItem) !== 'string') this.inMatrix = true;
         else if (this.cursor < this.calculation.length) this.cursor++;
+        this.update();
+    }
+
+    public navHome(): void {
+        this.cursor = 0;
+        this.update();
+    }
+
+    public navEnd(): void {
+        this.cursor = this.calculation.length;
         this.update();
     }
 

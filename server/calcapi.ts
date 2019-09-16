@@ -81,4 +81,9 @@ router.get('/', (req, res) => {
 
 });
 
+
+router.get('/coffee', (req, res) => {
+    res.sendStatus(418);
+});
+
 export default router;
