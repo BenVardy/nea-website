@@ -14,7 +14,7 @@ export default class Addition implements IExpr {
         if (params.length !== 2) throw new Error('Must have 2 params');
 
         let [param1, param2] = params;
-        console.log(params);
+        // console.log(params);
         if (param1.type !== param2.type) throw new Error('Must be the same type');
 
         if (param1.type === 'matrix') {
