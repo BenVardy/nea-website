@@ -1,3 +1,5 @@
+import fontLoader from 'webfontloader';
+
 import Controller from '../controllers/controller';
 import Calculator from '../models/calculator';
 import { IController, IModel, IObservable, IView } from '../types';
@@ -21,6 +23,14 @@ export default class Document implements IView {
      * Creates a new Document
      */
     public constructor() {
+        // Load fonts
+        fontLoader.load({
+            custom: {
+                families: ['KaTeX_Size1', 'KaTeX_Size3', 'KaTeX_Size4', 'KaTeX_Math'],
+                urls: ['/main.css']
+            }
+        });
+
         let tempRoot = document.getElementById('root');
         if (!tempRoot) throw Error('No Root set in html');
 
