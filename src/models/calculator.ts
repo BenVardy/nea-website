@@ -1,6 +1,6 @@
 import katex from 'katex';
 
-import { IAPIResult, IModel, IObserver, TSymbol } from '../types';
+import { IAPIResult, IModel, IObserver, TSymbol, IAPIError } from '../types';
 import InputMatrix from './inputMatrix';
 
 export default class Calculator implements IModel {
@@ -206,7 +206,10 @@ export default class Calculator implements IModel {
         let {calculation} = this;
         let joinedCalc: string = this.fixBrackets(calculation.map(item => item.toString()).join(''));
         fetch(`/api?calc=${encodeURIComponent(joinedCalc)}`)
-        .then(res => res.json())
+        .then(res => {
+            if (res.status !== 200) throw res;
+            else return res.json();
+        })
         .then((json: IAPIResult[]) => {
             this.results = json.map(result => {
                 // console.log(result.type);
@@ -221,6 +224,10 @@ export default class Calculator implements IModel {
                 }
             });
             this.update();
+        })
+        .catch(err => err.json())
+        .then((json: IAPIError) => {
+            console.error(json.message);
         });
     }
 

@@ -48,24 +48,13 @@ export interface IController {
     parseChar(key: string, keyCode: number): void;
 }
 
-// export interface ISymbolData {
-//     /**
-//      * @param cursor Only needed for the inputMatrix class
-//      */
-//     toLatex(cursor?: boolean): string;
-//     toString(): string;
-// }
-
-// export interface ISymbolType {
-//     [key: string]: ISymbolData;
-//     expr: ExprWrapper;
-//     matrix: InputMatrix;
-//     no: DigitWrapper;
-// }
-
 export interface IAPIResult {
     type: 'matrix'|'no'|'vector';
     data: any;
+}
+
+export interface IAPIError {
+    message: string;
 }
 
 /**
