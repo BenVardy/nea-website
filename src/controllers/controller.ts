@@ -29,7 +29,7 @@ export default class Controller implements IController {
         if (!model) return;
 
         if (model.inMatrix) {
-            if (key.match(/^[\d\.]$/)) {
+            if (key.match(/^[\-\d\.]$/)) {
                 model.addToMatrix(key);
             } else {
                 switch (keyCode) {
@@ -76,6 +76,12 @@ export default class Controller implements IController {
                         break;
                     case 13: // Return
                         model.calculate();
+                        break;
+                    case 35:
+                        model.navEnd();
+                        break;
+                    case 36: // Home
+                        model.navHome();
                         break;
                     case 37: // Left Arrow
                         model.navLeft();

@@ -3,7 +3,7 @@ import execCalc from './calculator/execCalc';
 import exprMap from './calculator/exprMap';
 import { Matrix, Vector } from './calculator/models';
 import shuntingYard from './calculator/shuntingYard';
-import { TCalc, TExprParam } from './types';
+import { TCalc } from './types';
 
 function joinRegex(...regex: RegExp[]): RegExp {
     return new RegExp(regex.map(item => item.source).join('|'), 'gi');
@@ -14,11 +14,11 @@ const router = express.Router();
 router.use(express.json());
 
 router.get('/', (req, res) => {
-    const NUMBER_REGEX: RegExp = /[\d\.]+/;
+    const NUMBER_REGEX: RegExp = /(-1|[\d\.]+)/;
     const EXPR_REGEX: RegExp = /[a-z*+\-/\^]+/i;
-    const MATRIX_REGEX: RegExp = /\[(\[([\d\.]+,?)+\],?)+\]/;
+    const MATRIX_REGEX: RegExp = /\[(\[(-?[\d\.]+,?)+\],?)+\]/;
     // same as matrix but with only 1 inner array
-    const VECTOR_REGEX: RegExp = /\[(\[\d+,?\],?)+\]/;
+    const VECTOR_REGEX: RegExp = /\[(\[-?\d+,?\],?)+\]/;
     const BRACKET_REGEX: RegExp = /[\(\)]/;
 
     let { query: {calc: body} } = req;
@@ -28,6 +28,7 @@ router.get('/', (req, res) => {
     let partsArr: string[] | null = body
         .replace(/[\s]/g, '')
         .replace(/([\d\]\)])([\(\[])/g, '$1*$2')
+        .replace(/^-/g, '-1*')
         .match(joinRegex(
             NUMBER_REGEX,
             EXPR_REGEX,
@@ -49,16 +50,16 @@ router.get('/', (req, res) => {
                 type: 'matrix',
                 data: new Matrix(JSON.parse(item))
             };
+        } else if (item.match(NUMBER_REGEX)) {
+            return {
+                type: 'no',
+                data: +item
+            };
         } else if (item.match(EXPR_REGEX)) {
             if (!Object.keys(exprMap).includes(item)) throw new Error('invalid expr');
             return {
                 type: 'expr',
                 data: exprMap[item]
-            };
-        } else if (item.match(NUMBER_REGEX)) {
-            return {
-                type: 'no',
-                data: +item
             };
         } else {
             return {
@@ -70,7 +71,6 @@ router.get('/', (req, res) => {
 
     let postFix: TCalc[] = shuntingYard(calc);
     let result: any[] = execCalc(postFix).map(result => {
-        // console.log(result.data.toString());
         return {
             type: result.type,
             data: result.data.toString()
@@ -79,6 +79,11 @@ router.get('/', (req, res) => {
 
     res.status(200).json(result);
 
+});
+
+
+router.get('/coffee', (req, res) => {
+    res.sendStatus(418);
 });
 
 export default router;

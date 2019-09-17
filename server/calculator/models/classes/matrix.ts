@@ -123,7 +123,7 @@ export default class Matrix {
 
             return new Matrix(output);
         } else {
-            let objDim: number = Vector.isVector(object) ? object.getDim() : object.getDim(0);
+            let objDim: number = Vector.isVector(object) ? 1 : object.getDim(0);
 
             // Check if the dimensions are mxn and nxk
             if (Vector.isVector(object) && this.getDim(1) !== object.getDim()) {
@@ -137,12 +137,14 @@ export default class Matrix {
                 for (let j = 0; j < objDim; j++) {
                     let sum: number = 0;
                     for (let k = 0; k < this.getDim(1); k++) {
-                        sum += this._(i, k) * (Vector.isVector(object) ? object._(j) : object._(k, j));
+                        sum += this._(i, k) * (Vector.isVector(object) ? object._(k) : object._(k, j));
                     }
                     toAdd.push(sum);
                 }
                 output.push(toAdd);
             }
+
+            console.log(objDim);
 
             if (Vector.isVector(object)) return new Vector(output[0]);
             else return new Matrix(output);
