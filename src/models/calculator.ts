@@ -1,6 +1,6 @@
 import katex from 'katex';
 
-import { IAPIResult, IModel, IObserver, TSymbol, IAPIError } from '../types';
+import { IAPIError, IAPIResult, IModel, IObserver, TSymbol } from '../types';
 import InputMatrix from './inputMatrix';
 
 export default class Calculator implements IModel {
@@ -9,6 +9,7 @@ export default class Calculator implements IModel {
     // Properties
     private calculation: TSymbol[];
     private results: TSymbol[];
+    private error: string;
 
     private observers: IObserver[];
 
@@ -22,6 +23,8 @@ export default class Calculator implements IModel {
         this.calculation = [];
         this.observers = [];
         this.results = [];
+
+        this.error = '';
         this.cursor = 0;
 
         this.inMatrix = false;
@@ -131,7 +134,7 @@ export default class Calculator implements IModel {
     public matrixBackspace(): void {
         let currentMatrix: InputMatrix = this.getCurrentMatrix();
 
-        if (!this.shouldExitMatrix()) currentMatrix.backspace();
+        if (!this.shouldExitMatrix(true)) currentMatrix.backspace();
         else {
             this.navRight();
             this.backspace();
@@ -144,10 +147,10 @@ export default class Calculator implements IModel {
     /**
      * Checks if moving the cursor should exit the matrix
      */
-    public shouldExitMatrix(): boolean {
+    public shouldExitMatrix(del: boolean): boolean {
         let currentMatrix: InputMatrix = this.getCurrentMatrix();
 
-        return currentMatrix.atZeroZero();
+        return currentMatrix.atZeroZero() && (del ? currentMatrix._(0, 0) === '' : true);
     }
 
     /**
@@ -204,7 +207,15 @@ export default class Calculator implements IModel {
      */
     public calculate(): void {
         let {calculation} = this;
-        let joinedCalc: string = this.fixBrackets(calculation.map(item => item.toString()).join(''));
+        let joinedCalc: string = '';
+        try {
+            joinedCalc = this.fixBrackets(calculation.map(item => item.toString()).join(''));
+        } catch (ex) {
+            this.error = ex.message;
+
+            this.update();
+            return;
+        }
         fetch(`/api?calc=${encodeURIComponent(joinedCalc)}`)
         .then(res => {
             if (res.status !== 200) throw res;
@@ -223,11 +234,17 @@ export default class Calculator implements IModel {
                     );
                 }
             });
+
+            this.error = '';
             this.update();
         })
-        .catch(err => err.json())
-        .then((json: IAPIError) => {
-            console.error(json.message);
+        .catch(err => {
+            err.json()
+            .then((json: IAPIError) => {
+                // console.error(json.message);
+                this.error = json.message;
+                this.update();
+            });
         });
     }
 
@@ -248,8 +265,12 @@ export default class Calculator implements IModel {
 
         katex.render(this.toLatex(this.results, false), resultELem);
 
+        let errorElem: HTMLElement = document.createElement('div');
+        errorElem.innerText = this.error;
+
         root.appendChild(calculation);
         root.appendChild(resultELem);
+        root.appendChild(errorElem);
 
         return root;
     }

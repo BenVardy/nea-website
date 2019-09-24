@@ -80,14 +80,14 @@ router.get('/', (req, res) => {
 
         res.status(200).json(result);
     } catch (ex) {
-        console.log(ex);
+        console.log(ex.message);
         res.status(400).json({message: ex.message});
     }
 });
 
 
 router.get('/coffee', (req, res) => {
-    res.sendStatus(418);
+    res.status(418).send('I cannot brew coffee, I\'m a teapot!');
 });
 
 export default router;
