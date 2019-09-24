@@ -26,7 +26,7 @@ export interface IModel extends IObservable {
      */
     matrixNav(dir: (0|1|2|3|4)): void;
     matrixBackspace(): void;
-    shouldExitMatrix(): boolean;
+    shouldExitMatrix(del: boolean): boolean;
 
     navLeft(): void;
     navRight(): void;

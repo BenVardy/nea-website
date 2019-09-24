@@ -40,7 +40,7 @@ export default class Controller implements IController {
                         model.matrixNav(4);
                         break;
                     case 37: // Left Arrow
-                        if (!model.shouldExitMatrix()) {
+                        if (!model.shouldExitMatrix(false)) {
                             model.matrixNav(0);
                             break;
                         }

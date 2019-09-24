@@ -123,7 +123,7 @@ export default class Matrix {
 
             return new Matrix(output);
         } else {
-            let objDim: number = Vector.isVector(object) ? 1 : object.getDim(0);
+            let objDim: number = Vector.isVector(object) ? 1 : object.getDim(1);
 
             // Check if the dimensions are mxn and nxk
             if (Vector.isVector(object) && this.getDim(1) !== object.getDim()) {
@@ -143,8 +143,6 @@ export default class Matrix {
                 }
                 output.push(toAdd);
             }
-
-            console.log(objDim);
 
             if (Vector.isVector(object)) return new Vector(output[0]);
             else return new Matrix(output);
@@ -292,7 +290,7 @@ export default class Matrix {
      * Converts a matrix to a LaTeX string
      */
     public toLatex(): string {
-        return `\\begin{bmatrix}${this.getRoundArr().map(row => row.join('&&')).join('\\\\')}\\end{bmatrix}`;
+        return `\\begin{bmatrix}${this.getRoundArr().map(row => row.join('&')).join('\\\\')}\\end{bmatrix}`;
     }
     /**
      * Converts a matrix to a string for console
