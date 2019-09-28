@@ -5,12 +5,12 @@ import Calculator from '../models/calculator';
 import { IController, IModel, IObservable, IView } from '../types';
 
 import 'katex/dist/katex.min.css';
-import './document.scss';
+import './index.scss';
 
 /**
  * The representation of the DOM in the MVC
  */
-export default class Document implements IView {
+export default class Index implements IView {
     // Properties
     private model: IModel;
     private controller: IController;

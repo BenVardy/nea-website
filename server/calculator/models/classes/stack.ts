@@ -12,9 +12,9 @@ export default class Stack<T> {
         if (this.isEmpty()) throw new Error('Stack is empty');
 
         if (no === undefined) {
-            return this.arr.splice(this.arr.length - 1, 1)[0];
+            return this.arr.pop() || [];
         } else {
-            return this.arr.splice(Math.max(0, this.arr.length - 1 - no), this.arr.length);
+            return this.arr.splice(Math.max(0, this.arr.length - no), no);
         }
     }
 

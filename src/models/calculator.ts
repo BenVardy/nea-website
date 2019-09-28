@@ -15,6 +15,8 @@ export default class Calculator implements IModel {
 
     private cursor: number;
 
+    private clearNext: boolean;
+
     // Methods
     /**
      * Creates a new Calculator
@@ -27,6 +29,7 @@ export default class Calculator implements IModel {
         this.error = '';
         this.cursor = 0;
 
+        this.clearNext = false;
         this.inMatrix = false;
     }
 
@@ -62,6 +65,13 @@ export default class Calculator implements IModel {
      * @param s The item to add
      */
     public addToCalc(...s: TSymbol[]): void {
+
+        // if (this.clearNext) {
+        //     this.clearNext = false;
+
+        //     this.calculation = [];
+        //     this.results = [];
+        // }
 
         for (let item of s) {
             this.calculation.splice(this.cursor, 0, item);
@@ -236,6 +246,8 @@ export default class Calculator implements IModel {
             });
 
             this.error = '';
+
+            this.clearNext = true;
             this.update();
         })
         .catch(err => {
@@ -249,11 +261,26 @@ export default class Calculator implements IModel {
     }
 
     /**
-     * Gets the html representation of the calculation
+     * Gets Html
      */
     public getHtml(): HTMLElement {
+        // The overall root
         let root: HTMLElement = document.createElement('div');
-        root.className = 'calculator-root';
+        root.className = 'app-root';
+
+        root.appendChild(this.getCalculatorHtml());
+        root.appendChild(this.getQuestionHtml());
+
+        return root;
+    }
+
+    /**
+     * Gets Html for the calculator section
+     */
+    private getCalculatorHtml(): HTMLElement {
+        // The root for the calculator section
+        let calculator: HTMLElement = document.createElement('div');
+        calculator.className = 'calculator-root';
 
         let calculation: HTMLElement = document.createElement('div');
         calculation.className = 'calculation';
@@ -261,18 +288,33 @@ export default class Calculator implements IModel {
         katex.render(this.toLatex(this.calculation, true), calculation);
 
         let resultELem: HTMLElement = document.createElement('div');
-        resultELem.className = 'result';
+        resultELem.className = 'result calculation';
 
-        katex.render(this.toLatex(this.results, false), resultELem);
+        // katex.render(this.toLatex(this.results, false), resultELem);
+        // if (resultELem.innerHTML === '') resultELem.innerHTML = '&nbsp;';
+        let resultLatex: string = this.toLatex(this.results, false);
+        if (resultLatex === '') resultELem.innerHTML = '&nbsp;';
+        else katex.render(resultLatex, resultELem);
 
         let errorElem: HTMLElement = document.createElement('div');
         errorElem.innerText = this.error;
 
-        root.appendChild(calculation);
-        root.appendChild(resultELem);
-        root.appendChild(errorElem);
+        calculator.appendChild(calculation);
+        calculator.appendChild(resultELem);
+        calculator.appendChild(errorElem);
 
-        return root;
+        return calculator;
+    }
+
+    /**
+     * Gets html for the questions section
+     */
+    private getQuestionHtml(): HTMLElement {
+        // The root for the questions section
+        let questions: HTMLElement = document.createElement('div');
+        questions.className = 'questions-root';
+
+        return questions;
     }
 
     /**

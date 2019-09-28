@@ -1,4 +1,3 @@
-import Document from './views/document';
+import Index from './views/index';
 
-// Instantiate a new document
-new Document();
+new Index();
