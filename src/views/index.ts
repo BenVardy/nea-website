@@ -19,6 +19,8 @@ export default class Index implements IView {
     // The root element
     private docRoot: HTMLElement;
 
+    private calcRoot: HTMLElement;
+
     // Methods
     /**
      * Creates a new Document
@@ -43,10 +45,19 @@ export default class Index implements IView {
         this.model.addObserver(this);
         this.controller.setModel(this.model);
 
-        this.update(this.model);
+        this.calcRoot = document.createElement('div');
+        this.calcRoot.id = 'calculator-root';
 
+        this.calcRoot.tabIndex = -1;
         this.inputChar = this.inputChar.bind(this);
-        document.addEventListener('keydown', this.inputChar);
+
+        this.calcRoot.addEventListener('keydown', this.inputChar);
+
+        document.onreadystatechange = () => {
+            if (document.readyState === 'complete') this.calcRoot.focus();
+        };
+
+        this.update(this.model);
     }
 
     /**
@@ -67,22 +78,30 @@ export default class Index implements IView {
         let newModel = source as IModel;
 
         this.docRoot.innerHTML = '';
-        this.docRoot.appendChild(this.getCalculatorHtml(newModel));
+        this.setCalculatorHtml(newModel);
+        this.docRoot.appendChild(this.calcRoot);
+
         this.docRoot.appendChild(this.getQuestionHtml(newModel));
+
+        this.calcRoot.focus();
     }
 
     /**
-     * Gets Html for the calculator section
+     * Sets Html for the calculator section in CalcRoot
      */
-    private getCalculatorHtml(model: IModel): HTMLElement {
-        // The root for the calculator section
-        let calculator: HTMLElement = document.createElement('div');
-        calculator.className = 'calculator-root';
+    private setCalculatorHtml(model: IModel): void {
+        this.calcRoot.innerHTML = '';
 
+        // The root for the calculator section
         let calculation: HTMLElement = document.createElement('div');
         calculation.className = 'calculation';
 
-        katex.render(Calculator.toLatex(model.calculation, model.inMatrix, model.cursor, true), calculation);
+        katex.render(Calculator.toLatex(
+            model.calculation,
+            model.inMatrix,
+            model.cursor,
+            true
+        ), calculation);
 
         let resultELem: HTMLElement = document.createElement('div');
         resultELem.className = 'result calculation';
@@ -94,11 +113,9 @@ export default class Index implements IView {
         let errorElem: HTMLElement = document.createElement('div');
         errorElem.innerText = model.error;
 
-        calculator.appendChild(calculation);
-        calculator.appendChild(resultELem);
-        calculator.appendChild(errorElem);
-
-        return calculator;
+        this.calcRoot.appendChild(calculation);
+        this.calcRoot.appendChild(resultELem);
+        this.calcRoot.appendChild(errorElem);
     }
 
     /**
