@@ -42,5 +42,18 @@ export interface ICalc<T extends keyof ICalcData> {
     data: ICalcData[T];
 }
 
+export interface IQuestionOptions {
+    noRows?: number;
+    noCols?: number;
+    maxNo?: number;
+    ints?: boolean;
+}
+
+export interface IQuestion {
+    question: string;
+    // This should be the string representation of a matrix, number...
+    ans: string[];
+}
+
 export type TCalc = ICalc<keyof ICalcData>;
 export type TExprParam = ICalc<'matrix'|'no'|'vector'>;

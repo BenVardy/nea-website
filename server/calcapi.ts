@@ -3,7 +3,8 @@ import execCalc from './calculator/execCalc';
 import exprMap from './calculator/exprMap';
 import { Matrix, Vector } from './calculator/models';
 import shuntingYard from './calculator/shuntingYard';
-import { TCalc } from './types';
+import { IQuestionOptions, TCalc } from './types';
+import MatrixMult from './questions/matrixMult';
 
 function joinRegex(...regex: RegExp[]): RegExp {
     return new RegExp(regex.map(item => item.source).join('|'), 'gi');
@@ -85,6 +86,20 @@ router.get('/', (req, res) => {
     }
 });
 
+router.get('/question/:type', (req, res) => {
+    let { query: qTemp, params: {type} } = req;
+
+    if (type === '') return res.sendStatus(400);
+
+    let query: IQuestionOptions = qTemp;
+
+    switch (type) {
+        case 'matrixMult':
+            return res.status(200).send(new MatrixMult(query));
+        default:
+            return res.status(400);
+    }
+});
 
 router.get('/coffee', (req, res) => {
     res.status(418).send('I cannot brew coffee, I\'m a teapot!');

@@ -11,7 +11,7 @@ export default class Identity extends Matrix {
      * @param n The size of the Identity matrix
      */
     public constructor(n: number) {
-        let newArr: number[][] = new Array(n).fill(new Array(n).fill(0));
+        let newArr: number[][] = new Array(n).map(() => new Array(n).fill(0));
         for (let i = 0; i < n; i++) {
             newArr[i][i] = 1;
         }

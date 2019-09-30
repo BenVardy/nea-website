@@ -12,6 +12,11 @@ export interface IObservable {
 
 export interface IModel extends IObservable {
     inMatrix: boolean;
+    calculation: TSymbol[];
+    results: TSymbol[];
+    error: string;
+
+    cursor: number;
 
     addToCalc(...s: TSymbol[]): void;
 
@@ -26,7 +31,7 @@ export interface IModel extends IObservable {
      */
     matrixNav(dir: (0|1|2|3|4)): void;
     matrixBackspace(): void;
-    shouldExitMatrix(): boolean;
+    shouldExitMatrix(del: boolean): boolean;
 
     navLeft(): void;
     navRight(): void;
@@ -36,7 +41,7 @@ export interface IModel extends IObservable {
 
     calculate(): void;
 
-    getHtml(): HTMLElement;
+    // getHtml(): HTMLElement;
 }
 
 export interface IView extends IObserver {
