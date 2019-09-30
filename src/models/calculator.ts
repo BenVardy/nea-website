@@ -5,15 +5,61 @@ import InputMatrix from './inputMatrix';
 
 export default class Calculator implements IModel {
 
-    public inMatrix: boolean;
+    // Statics
+    /**
+     * Converts an array of numbers, expressions and matrices to latex
+     * @param symArr The array of symbols
+     */
+    public static toLatex(symArr: TSymbol[], inMatrix: boolean, cursor: number, showCursor: boolean): string {
+
+        let latex: string = symArr.map((sym, i) => {
+            let part: string;
+            if (typeof(sym) === 'string') {
+                part = sym;
+            } else {
+                // Don't -1 for matrices as it goes in the matrix
+                part = sym.toLatex(showCursor && inMatrix && cursor === i);
+            }
+
+            return part + (showCursor && !inMatrix && cursor - 1 === i ? '|' : '');
+        }).join('');
+
+        if (showCursor && !inMatrix && cursor === 0) latex = '|' + latex;
+
+        latex = latex.replace(/\*/g, '\\cdot');
+        // latex = latex.replace(/\((.*)\)(\|?)\/(\|?)\((.*)\)/g, '\\frac{$1$2}{$3$4}');
+
+        latex = this.fixBrackets(latex).replace(/\(/g, '\\left(').replace(/\)/g, '\\right)');
+
+        return latex;
+    }
+
+    /**
+     * Adds brackets to the start / end to balance out brackets
+     * @param calc The calculation string
+     */
+    private static fixBrackets(calc: string): string {
+        let leftMatch = calc.match(/\(/g);
+        let noLeft: number = leftMatch ? leftMatch.length : 0;
+
+        let rightMatch = calc.match(/\)/g);
+        let noRight: number = rightMatch ? rightMatch.length : 0;
+
+        calc += ')'.repeat(Math.max(0, noLeft - noRight));
+        calc = '('.repeat(Math.max(0, noRight - noLeft)) + calc;
+
+        return calc;
+    }
+
     // Properties
-    private calculation: TSymbol[];
-    private results: TSymbol[];
-    private error: string;
+    public inMatrix: boolean;
+    public calculation: TSymbol[];
+    public results: TSymbol[];
+    public error: string;
+
+    public cursor: number;
 
     private observers: IObserver[];
-
-    private cursor: number;
 
     private clearNext: boolean;
 
@@ -219,7 +265,7 @@ export default class Calculator implements IModel {
         let {calculation} = this;
         let joinedCalc: string = '';
         try {
-            joinedCalc = this.fixBrackets(calculation.map(item => item.toString()).join(''));
+            joinedCalc = Calculator.fixBrackets(calculation.map(item => item.toString()).join(''));
         } catch (ex) {
             this.error = ex.message;
 
@@ -261,63 +307,6 @@ export default class Calculator implements IModel {
     }
 
     /**
-     * Gets Html
-     */
-    public getHtml(): HTMLElement {
-        // The overall root
-        let root: HTMLElement = document.createElement('div');
-        root.className = 'app-root';
-
-        root.appendChild(this.getCalculatorHtml());
-        root.appendChild(this.getQuestionHtml());
-
-        return root;
-    }
-
-    /**
-     * Gets Html for the calculator section
-     */
-    private getCalculatorHtml(): HTMLElement {
-        // The root for the calculator section
-        let calculator: HTMLElement = document.createElement('div');
-        calculator.className = 'calculator-root';
-
-        let calculation: HTMLElement = document.createElement('div');
-        calculation.className = 'calculation';
-
-        katex.render(this.toLatex(this.calculation, true), calculation);
-
-        let resultELem: HTMLElement = document.createElement('div');
-        resultELem.className = 'result calculation';
-
-        // katex.render(this.toLatex(this.results, false), resultELem);
-        // if (resultELem.innerHTML === '') resultELem.innerHTML = '&nbsp;';
-        let resultLatex: string = this.toLatex(this.results, false);
-        if (resultLatex === '') resultELem.innerHTML = '&nbsp;';
-        else katex.render(resultLatex, resultELem);
-
-        let errorElem: HTMLElement = document.createElement('div');
-        errorElem.innerText = this.error;
-
-        calculator.appendChild(calculation);
-        calculator.appendChild(resultELem);
-        calculator.appendChild(errorElem);
-
-        return calculator;
-    }
-
-    /**
-     * Gets html for the questions section
-     */
-    private getQuestionHtml(): HTMLElement {
-        // The root for the questions section
-        let questions: HTMLElement = document.createElement('div');
-        questions.className = 'questions-root';
-
-        return questions;
-    }
-
-    /**
      * Should only be run when in a matrix
      * Gets the current matrix
      */
@@ -327,50 +316,5 @@ export default class Calculator implements IModel {
         if (!InputMatrix.isInputMatrix(sym)) throw new Error('Cursor not in matrix');
 
         return sym;
-    }
-
-    /**
-     * Converts an array of numbers, expressions and matrices to latex
-     * @param symArr The array of symbols
-     */
-    private toLatex(symArr: TSymbol[], showCursor: boolean): string {
-
-        let latex: string = symArr.map((sym, i) => {
-            let part: string;
-            if (typeof(sym) === 'string') {
-                part = sym;
-            } else {
-                // Don't -1 for matrices as it goes in the matrix
-                part = sym.toLatex(showCursor && this.inMatrix && this.cursor === i);
-            }
-
-            return part + (showCursor && !this.inMatrix && this.cursor - 1 === i ? '|' : '');
-        }).join('');
-
-        if (showCursor && !this.inMatrix && this.cursor === 0) latex = '|' + latex;
-
-        latex = latex.replace(/\*/g, '\\cdot');
-        // latex = latex.replace(/\((.*)\)(\|?)\/(\|?)\((.*)\)/g, '\\frac{$1$2}{$3$4}');
-
-        latex = this.fixBrackets(latex).replace(/\(/g, '\\left(').replace(/\)/g, '\\right)');
-
-        return latex;
-    }
-
-    /**
-     * Adds brackets to the start / end to balance out brackets
-     * @param calc The calculation string
-     */
-    private fixBrackets(calc: string): string {
-        let leftMatch = calc.match(/\(/g);
-        let noLeft: number = leftMatch ? leftMatch.length : 0;
-
-        let rightMatch = calc.match(/\)/g);
-        let noRight: number = rightMatch ? rightMatch.length : 0;
-
-        calc += ')'.repeat(Math.max(0, noLeft - noRight));
-        calc = '('.repeat(Math.max(0, noRight - noLeft)) + calc;
-
-        return calc;
     }
 }

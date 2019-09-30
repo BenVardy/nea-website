@@ -1,3 +1,4 @@
+import katex from 'katex';
 import fontLoader from 'webfontloader';
 
 import Controller from '../controllers/controller';
@@ -63,10 +64,52 @@ export default class Index implements IView {
      * @param source The model
      */
     public update(source: IObservable) {
-        let newModel: IModel = source as IModel;
+        let newModel = source as IModel;
 
         this.docRoot.innerHTML = '';
-        this.docRoot.appendChild(newModel.getHtml());
+        this.docRoot.appendChild(this.getCalculatorHtml(newModel));
+        this.docRoot.appendChild(this.getQuestionHtml(newModel));
+    }
+
+    /**
+     * Gets Html for the calculator section
+     */
+    private getCalculatorHtml(model: IModel): HTMLElement {
+        // The root for the calculator section
+        let calculator: HTMLElement = document.createElement('div');
+        calculator.className = 'calculator-root';
+
+        let calculation: HTMLElement = document.createElement('div');
+        calculation.className = 'calculation';
+
+        katex.render(Calculator.toLatex(model.calculation, model.inMatrix, model.cursor, true), calculation);
+
+        let resultELem: HTMLElement = document.createElement('div');
+        resultELem.className = 'result calculation';
+
+        let resultLatex: string = Calculator.toLatex(model.results, model.inMatrix, model.cursor, false);
+        if (resultLatex === '') resultELem.innerHTML = '&nbsp;';
+        else katex.render(resultLatex, resultELem);
+
+        let errorElem: HTMLElement = document.createElement('div');
+        errorElem.innerText = model.error;
+
+        calculator.appendChild(calculation);
+        calculator.appendChild(resultELem);
+        calculator.appendChild(errorElem);
+
+        return calculator;
+    }
+
+    /**
+     * Gets html for the questions section
+     */
+    private getQuestionHtml(model: IModel): HTMLElement {
+        // The root for the questions section
+        let questions: HTMLElement = document.createElement('div');
+        questions.className = 'questions-root';
+
+        return questions;
     }
 
 }
