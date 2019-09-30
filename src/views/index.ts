@@ -25,7 +25,7 @@ export default class Index implements IView {
     /**
      * Creates a new Document
      */
-    public constructor() {
+    public constructor(root: HTMLElement) {
         // Load fonts
         fontLoader.load({
             custom: {
@@ -34,10 +34,7 @@ export default class Index implements IView {
             }
         });
 
-        let tempRoot = document.getElementById('root');
-        if (!tempRoot) throw Error('No Root set in html');
-
-        this.docRoot = tempRoot;
+        this.docRoot = root;
 
         this.model = new Calculator();
         this.controller = new Controller();
@@ -48,7 +45,7 @@ export default class Index implements IView {
         this.calcRoot = document.createElement('div');
         this.calcRoot.id = 'calculator-root';
 
-        this.calcRoot.tabIndex = -1;
+        this.calcRoot.tabIndex = 0;
         this.inputChar = this.inputChar.bind(this);
 
         this.calcRoot.addEventListener('keydown', this.inputChar);
@@ -80,8 +77,6 @@ export default class Index implements IView {
         this.docRoot.innerHTML = '';
         this.setCalculatorHtml(newModel);
         this.docRoot.appendChild(this.calcRoot);
-
-        this.docRoot.appendChild(this.getQuestionHtml(newModel));
 
         this.calcRoot.focus();
     }
@@ -117,16 +112,4 @@ export default class Index implements IView {
         this.calcRoot.appendChild(resultELem);
         this.calcRoot.appendChild(errorElem);
     }
-
-    /**
-     * Gets html for the questions section
-     */
-    private getQuestionHtml(model: IModel): HTMLElement {
-        // The root for the questions section
-        let questions: HTMLElement = document.createElement('div');
-        questions.className = 'questions-root';
-
-        return questions;
-    }
-
 }
