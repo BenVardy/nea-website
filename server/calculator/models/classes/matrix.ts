@@ -137,6 +137,7 @@ export default class Matrix {
                 for (let j = 0; j < objDim; j++) {
                     let sum: number = 0;
                     for (let k = 0; k < this.getDim(1); k++) {
+                        console.log('here');
                         sum += this._(i, k) * (Vector.isVector(object) ? object._(k) : object._(k, j));
                     }
                     toAdd.push(sum);
@@ -144,7 +145,7 @@ export default class Matrix {
                 output.push(toAdd);
             }
 
-            if (Vector.isVector(object)) return new Vector(output[0]);
+            if (Vector.isVector(object)) return new Vector(output.map(row => row[0]));
             else return new Matrix(output);
         }
     }
