@@ -1,0 +1,44 @@
+@import '../styles/vars.scss';
+
+.nav-button {
+    border: 1px black solid;
+    border-radius: $unit;
+    cursor: pointer;
+    display: inline-block;
+    margin: $unit;
+    overflow: hidden;
+    padding: $unit;
+    position: relative;
+    text-align: center;
+    --webkit-transition-duration: 0.4s;
+    transition-duration: 0.4s;
+    user-select: none;
+}
+
+.nav-button::after {
+    background-color: #efefef;
+    content: "";
+    position: absolute;
+    padding-top: 300%;
+    padding-left: 350%;
+    margin-left: -100px!important;
+    margin-top: -120%;
+    opacity: 0;
+    transition: all 0.8s
+}
+
+.nav-button:active:after {
+    padding: 0;
+    margin: 0;
+    opacity: 1;
+    transition: 0s
+  }
+
+.top-bar {
+    background-color: $primary;
+    display: inline-block;
+    height: $unit * 6;
+    margin: auto !important;
+    padding: $unit 0;
+    width: 100%;
+}

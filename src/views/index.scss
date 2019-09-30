@@ -1,3 +1,4 @@
+@import '../styles/vars.scss';
 
 #calculator-root {
     border: 1px solid black;
@@ -7,5 +8,5 @@
 }
 
 .calculation {
-    padding: 4px;
+    padding: $unit / 2;
 }
