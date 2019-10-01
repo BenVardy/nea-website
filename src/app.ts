@@ -1,8 +1,11 @@
 import { createBrowserHistory, Location } from 'history';
 
-import { TopBar } from './components/topBar';
+import TopBar from './components/topBar';
+import Four0Four from './views/404';
 import Index from './views/index';
+import Questions from './views/questions';
 
+import 'katex/dist/katex.min.css';
 import './app.scss';
 
 const history = createBrowserHistory();
@@ -22,8 +25,13 @@ function onUrlChange(location: Location): void {
             // tslint:disable-next-line: no-unused-expression
             new Index(pageRoot);
             break;
+        case '/questions':
+            // tslint:disable-next-line: no-unused-expression
+            new Questions(pageRoot);
+            break;
         default:
-            pageRoot.innerHTML = '404 Page Not found';
+            Four0Four(pageRoot);
+            break;
     }
 }
 

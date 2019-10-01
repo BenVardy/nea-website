@@ -4,6 +4,41 @@ body {
     margin: 0;
 }
 
+.button {
+    border: 1px black solid;
+    border-radius: $unit;
+    color: black;
+    cursor: pointer;
+    display: inline-block;
+    margin: $unit;
+    overflow: hidden;
+    padding: $unit;
+    position: relative;
+    text-align: center;
+    --webkit-transition-duration: 0.4s;
+    transition-duration: 0.4s;
+    user-select: none;
+}
+
+.button::after {
+    background-color: #efefef;
+    content: "";
+    position: absolute;
+    padding-top: 300%;
+    padding-left: 350%;
+    margin-left: -100% !important;
+    margin-top: -120%;
+    opacity: 0;
+    transition: all 0.8s
+}
+
+.button:active:after {
+    padding: 0;
+    margin: 0;
+    opacity: 1;
+    transition: 0s
+  }
+
 .page {
     margin: $unit;
 }
