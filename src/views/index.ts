@@ -5,7 +5,6 @@ import Controller from '../controllers/controller';
 import Calculator from '../models/calculator';
 import { IController, IModel, IObservable, IView } from '../types';
 
-import 'katex/dist/katex.min.css';
 import './index.scss';
 
 /**

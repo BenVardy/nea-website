@@ -1,4 +1,5 @@
 import { Matrix, Vector } from './calculator/models';
+import MatrixAdd from './questions/matrixAdd';
 
 /**
  * A server-side expression. Must be stateless
@@ -57,3 +58,5 @@ export interface IQuestion {
 
 export type TCalc = ICalc<keyof ICalcData>;
 export type TExprParam = ICalc<'matrix'|'no'|'vector'>;
+
+export type TQuestion = typeof MatrixAdd;
