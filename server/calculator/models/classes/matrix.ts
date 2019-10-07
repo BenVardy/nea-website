@@ -297,7 +297,7 @@ export default class Matrix {
      */
     public toString(): string {
         let tempArr = this.getRoundArr();
-        return `[ [ ${tempArr.map(row => row.join(', ')).join(' ], [ ')} ] ]`;
+        return `[[${tempArr.map(row => row.join(',')).join('],[')}]]`;
     }
     //#endregion
 

@@ -1,4 +1,5 @@
 import { IQuestionController, IQuestionModel } from '../types';
+import InputMatrix from '../models/inputMatrix';
 
 export default class QuestionController implements IQuestionController {
     protected model?: IQuestionModel;
@@ -21,6 +22,8 @@ export default class QuestionController implements IQuestionController {
 
         // model could be undefined
         if (!model) return;
+
+        let {calculation} = model.getFocusedArea();
 
         if (model.inMatrix()) {
             if (key.match(/^[\-\d\.]$/)) {
@@ -61,6 +64,9 @@ export default class QuestionController implements IQuestionController {
             }
         } else {
             if (key.match(/^[\d\.]$/)) {
+                // Check if there is a matrix already inputted
+                // Don't allow multiple inputs
+                if (calculation.length > 0 && InputMatrix.isInputMatrix(calculation[0])) return;
                 model.addToCalc(key);
             } else {
                 switch (keyCode) {
@@ -83,6 +89,8 @@ export default class QuestionController implements IQuestionController {
                         model.navRight();
                         break;
                     case 219: // Left Square Bracket
+                        // Don't allow a matrix to be inputted unless it is the 1st item
+                        if (calculation.length >= 1) return;
                         model.newMatrix();
                         break;
                 }

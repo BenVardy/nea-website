@@ -61,6 +61,7 @@ export interface IQuestionModel extends IInputModel {
 
     changeFocus(newFocus: number): void;
     getQuestion(type: string, options: {[key: string]: string}): Promise<void>;
+    getFocusedArea(): IInputModel;
 }
 
 export interface IController {

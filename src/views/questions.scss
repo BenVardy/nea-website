@@ -1,9 +1,16 @@
 @import '../styles/vars.scss';
 
+.ans-area-container {
+    outline: 0;
+}
+
 .ans-area {
     border: 1px solid black;
-    // margin: 0 auto $unit;
-    outline: 0;
+    display: inline-block;
+    margin: $unit 0;
+    max-width: 25%;
+    min-width: 100px;
     overflow: hidden;
-    width: 100px;
+    padding: $unit;
+    text-align: center;
 }

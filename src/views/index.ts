@@ -1,5 +1,4 @@
 import katex from 'katex';
-import fontLoader from 'webfontloader';
 
 import CalcController from '../controllers/calcController';
 import Calculator from '../models/calculator';
@@ -28,14 +27,6 @@ export default class Index implements IObserver {
      * Creates a new Document
      */
     public constructor(root: HTMLElement) {
-        // Load fonts
-        fontLoader.load({
-            custom: {
-                families: ['KaTeX_Size1', 'KaTeX_Size3', 'KaTeX_Size4', 'KaTeX_Math'],
-                urls: ['/main.css']
-            }
-        });
-
         this.docRoot = root;
 
         this.model = new Calculator();

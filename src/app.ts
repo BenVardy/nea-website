@@ -1,4 +1,5 @@
 import { createBrowserHistory, Location } from 'history';
+import fontLoader from 'webfontloader';
 
 import TopBar from './components/topBar';
 import Four0Four from './views/404';
@@ -39,3 +40,9 @@ function onUrlChange(location: Location): void {
 const unlisten = history.listen(onUrlChange);
 onUrlChange(history.location);
 
+fontLoader.load({
+    custom: {
+        families: ['KaTeX_Size1', 'KaTeX_Size3', 'KaTeX_Size4', 'KaTeX_Math'],
+        urls: ['/main.css']
+    }
+});

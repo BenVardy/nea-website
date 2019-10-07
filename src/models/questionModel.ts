@@ -55,69 +55,69 @@ export default class QuestionsModel implements IQuestionModel {
 
     //#region IInputModel
     public inMatrix(): boolean {
-        return this.getCurrentArea().inMatrix();
+        return this.getFocusedArea().inMatrix();
     }
 
     public addToCalc(...s: TSymbol[]): void {
         for (let symbol of s) {
             if (InputMatrix.isInputMatrix(symbol) || symbol.match(/[\d\.]/)) {
-                this.getCurrentArea().addToCalc(symbol);
+                this.getFocusedArea().addToCalc(symbol);
             }
         }
         this.update();
     }
 
     public newMatrix(): void {
-        this.getCurrentArea().newMatrix();
+        this.getFocusedArea().newMatrix();
         this.update();
     }
 
     public endMatrix(forwards?: boolean): void {
-        this.getCurrentArea().endMatrix(forwards);
+        this.getFocusedArea().endMatrix(forwards);
         this.update();
     }
 
     public addToMatrix(c: string): void {
-        this.getCurrentArea().addToMatrix(c);
+        this.getFocusedArea().addToMatrix(c);
         this.update();
     }
 
     public matrixNav(dir: (0|1|2|3|4)): void {
-        this.getCurrentArea().matrixNav(dir);
+        this.getFocusedArea().matrixNav(dir);
         this.update();
     }
 
     public matrixBackspace(): void {
-        this.getCurrentArea().matrixBackspace();
+        this.getFocusedArea().matrixBackspace();
         this.update();
     }
 
     public shouldExitMatrix(del: boolean): boolean {
-        return this.getCurrentArea().shouldExitMatrix(del);
+        return this.getFocusedArea().shouldExitMatrix(del);
     }
 
     public navLeft(): void {
-        this.getCurrentArea().navLeft();
+        this.getFocusedArea().navLeft();
         this.update();
     }
 
     public navRight(): void {
-        this.getCurrentArea().navRight();
+        this.getFocusedArea().navRight();
         this.update();
     }
 
     public navEnd(): void {
-        this.getCurrentArea().navEnd();
+        this.getFocusedArea().navEnd();
         this.update();
     }
 
     public navHome(): void {
-        this.getCurrentArea().navHome();
+        this.getFocusedArea().navHome();
         this.update();
     }
 
     public backspace(): void {
-        this.getCurrentArea().backspace();
+        this.getFocusedArea().backspace();
         this.update();
     }
 
@@ -161,11 +161,12 @@ export default class QuestionsModel implements IQuestionModel {
         for (let ans of this.answers) {
             let submitedAns: string = ans.calcArea.toString();
             ans.correct = submitedAns === ans.correctAns;
+            console.log(ans.correct);
         }
         this.update();
     }
 
-    private getCurrentArea(): IInputModel {
+    public getFocusedArea(): IInputModel {
         return this.answers[this.focusedArea].calcArea;
     }
 
