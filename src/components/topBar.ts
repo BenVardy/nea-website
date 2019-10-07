@@ -1,30 +1,30 @@
 import { History } from 'history';
 
+import Button from './button';
+
 import './topBar.scss';
 
 export default function TopBar(history: History): HTMLElement {
     let topBar = document.createElement('div');
     topBar.className = 'top-bar';
 
-    let indexButton = document.createElement('div');
-    indexButton.className = 'button';
-    indexButton.innerHTML = 'Calculator';
-    indexButton.addEventListener('click', () => {
+    let indexButton = new Button();
+    indexButton.text = 'Calculator';
+    indexButton.clickHandler = () => {
         if (history.location.pathname !== '/') {
             history.push('/');
         }
-    });
-    topBar.appendChild(indexButton);
+    };
+    topBar.appendChild(indexButton.render());
 
-    let questionsButton = document.createElement('div');
-    questionsButton.className = 'button';
-    questionsButton.innerHTML = 'Questions';
-    questionsButton.addEventListener('click', () => {
+    let questionsButton = new Button();
+    questionsButton.text = 'Questions';
+    questionsButton.clickHandler = () => {
         if (history.location.pathname !== '/questions') {
             history.push('/questions');
         }
-    });
-    topBar.appendChild(questionsButton);
+    };
+    topBar.appendChild(questionsButton.render());
 
     return topBar;
 }

@@ -38,3 +38,4 @@ function onUrlChange(location: Location): void {
 
 const unlisten = history.listen(onUrlChange);
 onUrlChange(history.location);
+

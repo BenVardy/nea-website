@@ -1,20 +1,20 @@
 import katex from 'katex';
 import fontLoader from 'webfontloader';
 
-import Controller from '../controllers/controller';
+import CalcController from '../controllers/calcController';
 import Calculator from '../models/calculator';
-import { IController, IModel, IObservable, IView } from '../types';
+import { ICalcModel, IController, IObservable, IObserver} from '../types';
 
-import commands from '../models/commands';
+import {commands} from '../models/statics';
 
 import './index.scss';
 
 /**
  * The representation of the DOM in the MVC
  */
-export default class Index implements IView {
+export default class Index implements IObserver {
     // Properties
-    private model: IModel;
+    private model: ICalcModel;
     private controller: IController;
 
     // The root element
@@ -39,7 +39,7 @@ export default class Index implements IView {
         this.docRoot = root;
 
         this.model = new Calculator();
-        this.controller = new Controller();
+        this.controller = new CalcController();
 
         this.model.addObserver(this);
         this.controller.setModel(this.model);
@@ -68,8 +68,7 @@ export default class Index implements IView {
         };
 
         this.docRoot.appendChild(this.calcRoot);
-        this.staticUsage()
-            .then(html => this.docRoot.appendChild(html));
+        this.docRoot.appendChild(this.staticUsage());
 
         this.showCursor = true;
 
@@ -77,29 +76,29 @@ export default class Index implements IView {
     }
 
     /**
+     * Called by the model to update the interface with new data
+     * @param source The model
+     */
+    public update(source: IObservable) {
+        let newModel = source as ICalcModel;
+
+        this.setCalculatorHtml(newModel);
+    }
+
+    /**
      * Handles the keydown event in the webpage
      * @param e The event passed from the "keydown" event
      */
-    public inputChar(e: KeyboardEvent): void {
+    private inputChar(e: KeyboardEvent): void {
         let {key, keyCode} = e;
 
         this.controller.parseChar(key, keyCode);
     }
 
     /**
-     * Called by the model to update the interface with new data
-     * @param source The model
-     */
-    public update(source: IObservable) {
-        let newModel = source as IModel;
-
-        this.setCalculatorHtml(newModel);
-    }
-
-    /**
      * Sets Html for the calculator section in CalcRoot
      */
-    private setCalculatorHtml(model: IModel): void {
+    private setCalculatorHtml(model: ICalcModel): void {
         this.calcRoot.innerHTML = '';
 
         // The root for the calculator section
@@ -108,7 +107,7 @@ export default class Index implements IView {
 
         let calcLatex: string = Calculator.toLatex(
             model.calculation,
-            model.inMatrix,
+            model.inMatrix(),
             model.cursor,
             this.showCursor
         );
@@ -118,7 +117,7 @@ export default class Index implements IView {
         let resultELem: HTMLElement = document.createElement('div');
         resultELem.className = 'result calculation';
 
-        let resultLatex: string = Calculator.toLatex(model.results, model.inMatrix, model.cursor, false, true);
+        let resultLatex: string = Calculator.toLatex(model.results, model.inMatrix(), model.cursor, false, true);
         if (resultLatex === '') resultELem.innerHTML = '&nbsp;';
         else katex.render(resultLatex, resultELem);
 
@@ -130,7 +129,7 @@ export default class Index implements IView {
         this.calcRoot.appendChild(errorElem);
     }
 
-    private async staticUsage(): Promise<HTMLElement> {
+    private staticUsage(): HTMLElement {
         let container = document.createElement('div');
         container.className = 'usage';
 
@@ -172,7 +171,7 @@ export default class Index implements IView {
                 td.innerHTML = val;
 
                 return td;
-            }))
+            }));
 
             return tr;
         }));

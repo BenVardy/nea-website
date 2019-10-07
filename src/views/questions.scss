@@ -1,0 +1,9 @@
+@import '../styles/vars.scss';
+
+.ans-area {
+    border: 1px solid black;
+    // margin: 0 auto $unit;
+    outline: 0;
+    overflow: hidden;
+    width: 100px;
+}
