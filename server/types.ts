@@ -53,7 +53,12 @@ export interface IQuestionOptions {
 export interface IQuestion {
     question: string;
     // This should be the string representation of a matrix, number...
-    ans: string[];
+    answers: IAnswer[];
+}
+
+export interface IAnswer {
+    label: string;
+    value: string;
 }
 
 export type TCalc = ICalc<keyof ICalcData>;

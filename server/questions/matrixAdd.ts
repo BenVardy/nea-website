@@ -1,9 +1,9 @@
 import { Matrix, RandomMatrix } from '../calculator/models';
-import { IQuestion, IQuestionOptions } from '../types';
+import { IAnswer, IQuestion, IQuestionOptions } from '../types';
 
 export default class MatrixAdd implements IQuestion {
     public question: string;
-    public ans: string[];
+    public answers: IAnswer[];
 
     constructor(options: IQuestionOptions) {
         const noRows: number = options.noRows || 3;
@@ -15,7 +15,10 @@ export default class MatrixAdd implements IQuestion {
 
         let result: Matrix = matrices[0].add(matrices[1]);
 
-        this.question = matrices.map(matrix => matrix.toLatex()).join(' ') + '=';
-        this.ans = [ result.toString() ];
+        this.question = matrices.map(matrix => matrix.toLatex()).join('+') + '=';
+        this.answers = [{
+            label: '',
+            value: result.toString()
+        }];
     }
 }
