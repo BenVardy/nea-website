@@ -1,7 +1,7 @@
 import express from 'express';
 import execCalc from './calculator/execCalc';
 import exprMap from './calculator/exprMap';
-import { Matrix, Vector } from './calculator/models';
+import { Matrix, Vector, RandomMatrix, gaussianElimination } from './calculator/models';
 import shuntingYard from './calculator/shuntingYard';
 import questions from './questions';
 import { IQuestionOptions, TCalc, TQuestion } from './types';
@@ -99,6 +99,38 @@ router.get('/question/:type', (req, res) => {
     } else {
         return res.sendStatus(400);
     }
+});
+
+router.get('/404', (req, res) => {
+    let matrix: Matrix;
+    let four0four = new Vector([4, 0, 4]);
+    let result: number[] = [];
+
+    do {
+        matrix = new RandomMatrix(3, 3, 10);
+        try {
+            result = gaussianElimination(
+                new Matrix(matrix.transposed().getArr().concat([four0four.getArr()])
+            ).transposed().getArr());
+        } catch (ex) {
+            continue;
+        }
+    } while (result.length === 0);
+
+    res.status(200).json([
+        {
+            type: 'matrix',
+            data: matrix.toString()
+        },
+        {
+            type: 'matrix',
+            data: new Vector(result).toString()
+        },
+        {
+            type: 'matrix',
+            data: four0four.toString()
+        }
+    ]);
 });
 
 router.get('/coffee', (req, res) => {

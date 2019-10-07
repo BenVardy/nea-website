@@ -1,23 +1,35 @@
 import katex from 'katex';
 
-export default function Four0Four(pageRoot: HTMLElement): void {
-    katex.render(`
-        \\begin{bmatrix}
-            3 & -2 & 6 \\\\
-            2 & 1 & -8 \\\\
-            -2 & -1 & 12
-        \\end{bmatrix}
-        \\begin{bmatrix}
-            2 \\\\ 4 \\\\ 1
-        \\end{bmatrix}
-        =
-        \\begin{bmatrix}
-            4 \\\\ 0 \\\\ 4
-        \\end{bmatrix}`,
-        pageRoot
-    );
+import Calculator from '../models/calculator';
+import InputMatrix from '../models/inputMatrix';
+import {IAPIResult, TSymbol} from '../types';
 
-    let message = document.createElement('div');
-    message.innerHTML = 'Page not found';
-    pageRoot.appendChild(message);
+export default function Four0Four(pageRoot: HTMLElement): void {
+    fetch('/api/404')
+    .then(res => res.json())
+    .then((json: IAPIResult[]) => {
+        let results: TSymbol[] = json.map(res => {
+            return new InputMatrix(
+                JSON.parse(res.data).map((row: number[]) => (
+                    row.map((data: number) => data.toString()
+                )))
+            );
+        });
+
+        results.splice(2, 0, '=');
+
+        let latex = Calculator.toLatex(
+            results,
+            false,
+            0,
+            false
+        );
+
+        katex.render(latex, pageRoot);
+
+        let message = document.createElement('div');
+        message.innerHTML = 'Page not found';
+        pageRoot.appendChild(message);
+    })
+    .catch(err => console.error(err));
 }
