@@ -1,10 +1,16 @@
-export default class Questions {
+import { IView } from '../types';
+
+export default class Questions implements IView {
     private root: HTMLElement;
 
     public constructor(root: HTMLElement) {
         this.root = root;
 
         this.update();
+    }
+
+    public inputChar(e: KeyboardEvent): void {
+        // TODO
     }
 
     public update() {

@@ -20,6 +20,7 @@ pageRoot.className = 'page';
 root.appendChild(pageRoot);
 
 function onUrlChange(location: Location): void {
+    pageRoot.innerHTML = '';
     switch (location.pathname) {
         case '/':
             // tslint:disable-next-line: no-unused-expression

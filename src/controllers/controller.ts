@@ -44,6 +44,7 @@ export default class Controller implements IController {
                             model.matrixNav(0);
                             break;
                         }
+                        // Don't break if it should exit matrix to left
                     // I know its not number order
                     case 219: // Left Square Bracket
                         // endMatrix(forwards: boolean) -> false == don't move the cursor forwards
@@ -67,7 +68,7 @@ export default class Controller implements IController {
         } else {
             if (key.match(/^[\d\.]$/)) {
                 model.addToCalc(key);
-            } else if (key.match(/^[a-z+*/x\-()]$/)) {
+            } else if (key.match(/^[a-z+*/\^\-()]$/)) {
                 model.addToCalc(key);
             } else {
                 switch (keyCode) {

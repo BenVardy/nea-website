@@ -27,9 +27,9 @@ router.get('/', (req, res) => {
     if (!body && typeof(body) !== 'string') return res.status(400);
 
     let partsArr: string[] | null = body
-        .replace(/[\s]/g, '')
+        .replace(new RegExp('-(\\(?' + joinRegex(/(-1|\+?[\d\.]+)/, MATRIX_REGEX).source + ')', 'g'), '+(-1*$1)')
+        .replace(/(^\+)|(?<=\(|\^)\+|\s/g, '')
         .replace(/([\d\]\)])([\(\[])/g, '$1*$2')
-        .replace(/^-/g, '-1*')
         .match(joinRegex(
             NUMBER_REGEX,
             EXPR_REGEX,

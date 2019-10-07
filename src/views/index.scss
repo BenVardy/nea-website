@@ -2,9 +2,11 @@
 
 #calculator-root {
     border: 1px solid black;
-    // outline: 0;
-    text-align: right;
-    width: 100%;
+    margin: 0 auto $unit;
+    outline: 0;
+    overflow: hidden;
+    // text-align: right;
+    width: 50%;
 }
 
 .calculation {
