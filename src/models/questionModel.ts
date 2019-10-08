@@ -148,7 +148,7 @@ export default class QuestionsModel implements IQuestionModel {
                     calcArea: new Calculator(),
                     correctAns: val.value,
                     label: val.label,
-                    correct: false,
+                    correct: -1,
                 } as IAnswer;
             });
         })
@@ -159,8 +159,8 @@ export default class QuestionsModel implements IQuestionModel {
 
     public submit(): void {
         for (let ans of this.answers) {
-            let submitedAns: string = ans.calcArea.toString();
-            ans.correct = submitedAns === ans.correctAns;
+            let submittedAns: string = ans.calcArea.toString();
+            ans.correct = (submittedAns === ans.correctAns) ? 1 : 0;
             console.log(ans.correct);
         }
         this.update();

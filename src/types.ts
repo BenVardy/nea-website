@@ -51,7 +51,12 @@ export interface IAnswer {
     calcArea: IInputModel;
     correctAns: string;
     label: string;
-    correct: boolean;
+    /**
+     * -1 = Not Answered
+     * 0 = Incorrect
+     * 1 = Correct
+     */
+    correct: (-1|0|1);
 }
 
 export interface IQuestionModel extends IInputModel {

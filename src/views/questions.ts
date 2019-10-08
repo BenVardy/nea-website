@@ -58,7 +58,16 @@ export default class Questions implements IObserver {
             let ansArea: IInputModel = ans.calcArea;
 
             let ansElem = document.createElement('div');
-            ansElem.className = 'ans-area';
+            // Set boarder to green if correct else red
+            switch (ans.correct) {
+                case 0:
+                    ansElem.classList.add('incorrect-ans');
+                    break;
+                case 1:
+                    ansElem.classList.add('correct-ans');
+                    break;
+            }
+            ansElem.classList.add('ans-area');
 
             let ansLatex: string = Calculator.toLatex(
                 ansArea.calculation,

@@ -14,3 +14,11 @@
     padding: $unit;
     text-align: center;
 }
+
+.correct-ans {
+    border-color: green;
+}
+
+.incorrect-ans {
+    border-color: red;
+}
