@@ -1,4 +1,7 @@
-import { IQuestion } from '../types';
+/**
+ * Expose all the questions as an object
+ */
+
 import * as Questions from './questionsRoot';
 
 let output: {[key: string]: typeof Questions.MatrixAdd} = {};

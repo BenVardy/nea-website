@@ -27,7 +27,7 @@ router.get('/', (req, res) => {
     if (!body && typeof(body) !== 'string') return res.status(400);
 
     let partsArr: string[] | null = body
-        .replace(new RegExp('-(\\(?' + joinRegex(/(-1|\+?[\d\.]+)/, MATRIX_REGEX).source + ')', 'g'), '+(-1*$1)')
+        .replace(new RegExp('(?<!])-(\\(?' + joinRegex(/(-1|\+?[\d\.]+)/, MATRIX_REGEX).source + ')(?![\\w\\s]*[\\]])', 'g'), '+(-1*$1)')
         .replace(/(^\+)|(?<=\(|\^)\+|\s/g, '')
         .replace(/([\d\]\)])([\(\[])/g, '$1*$2')
         .match(joinRegex(
@@ -70,6 +70,7 @@ router.get('/', (req, res) => {
                 };
             }
         });
+        console.log(calc);
 
         let postFix: TCalc[] = shuntingYard(calc);
         let result: any[] = execCalc(postFix).map(result => {
@@ -81,7 +82,7 @@ router.get('/', (req, res) => {
 
         res.status(200).json(result);
     } catch (ex) {
-        console.log(ex.message);
+        console.log(ex);
         res.status(400).json({message: ex.message});
     }
 });

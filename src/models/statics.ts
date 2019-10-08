@@ -11,7 +11,7 @@ export const commands = {
 
 export const buttons: IQuestionButton[] = [
     {
-        label: 'Matrix Mult',
+        label: 'Matrix Multiplication',
         type: 'matrixmult'
     },
     {

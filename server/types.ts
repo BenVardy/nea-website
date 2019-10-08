@@ -48,6 +48,9 @@ export interface IQuestionOptions {
     noCols?: number;
     maxNo?: number;
     ints?: boolean;
+    // Things for eigenvalue questions
+    eigenvalues?: boolean;
+    eigenvectors?: boolean;
 }
 
 export interface IQuestion {
