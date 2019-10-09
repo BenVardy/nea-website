@@ -18,6 +18,8 @@ export default class Questions implements IObserver {
     private model: IQuestionModel;
     private controller: IQuestionController;
 
+    private showCursor: boolean;
+
     public constructor(root: HTMLElement) {
         this.root = root;
 
@@ -41,23 +43,32 @@ export default class Questions implements IObserver {
 
         this.inputChar = this.inputChar.bind(this);
         this.ansElemContainer.addEventListener('keydown', this.inputChar);
-
+        this.ansElemContainer.addEventListener('focusin', () => {
+            this.showCursor = true;
+            // this.update(this.model);
+        });
+        this.ansElemContainer.addEventListener('focusout', () => {
+            this.showCursor = false;
+            this.update(this.model);
+        });
         this.ansElemContainer.tabIndex = 0;
         this.ansElemContainer.focus();
         this.root.appendChild(this.ansElemContainer);
 
         this.handleFocusChange = this.handleFocusChange.bind(this);
 
+        this.showCursor = true;
+
         this.update(this.model);
     }
 
-    public update(o: IObservable) {
+    public update(o: IObservable): void {
         const newModel = o as IQuestionModel;
         this.questionElem.innerHTML = newModel.question;
 
         this.ansElemContainer.innerHTML = '';
 
-        this.ansElemContainer.append(...newModel.answers.map((ans, i) => {
+        this.ansElemContainer.append(...newModel.answerAreas.map((ans, i) => {
             let ansArea: IInputModel = ans.calcArea;
 
             let ansElem = document.createElement('div');
@@ -76,7 +87,7 @@ export default class Questions implements IObserver {
                 ansArea.calculation,
                 ansArea.inMatrix(),
                 ansArea.cursor,
-                newModel.focusedArea === i
+                this.showCursor && newModel.focusedArea === i
             );
             if (ansLatex === '') ansElem.innerHTML = '&nbsp;';
             else katex.render(ansLatex, ansElem);
@@ -105,6 +116,7 @@ export default class Questions implements IObserver {
 
     private handleNewQuestion(type: string): void {
         this.controller.getQuestion(type, {});
+        this.ansElemContainer.focus();
     }
 
     private handleFocusChange(i: number): void {

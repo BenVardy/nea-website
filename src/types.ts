@@ -47,9 +47,8 @@ export interface ICalcModel extends IInputModel {
     error: string;
 }
 
-export interface IAnswer {
+export interface IAnswerArea {
     calcArea: IInputModel;
-    correctAns: string;
     label: string;
     /**
      * -1 = Not Answered
@@ -61,7 +60,8 @@ export interface IAnswer {
 
 export interface IQuestionModel extends IInputModel {
     question: string;
-    answers: IAnswer[];
+    answerAreas: IAnswerArea[];
+    answers: string[];
     focusedArea: number;
 
     changeFocus(newFocus: number): void;

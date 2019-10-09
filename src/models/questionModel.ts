@@ -1,6 +1,6 @@
 import katex from 'katex';
 
-import {IAnswer, IAPIQuestionResult, IInputModel, IObserver, IQuestionModel, TSymbol} from '../types';
+import {IAnswerArea, IAPIQuestionResult, IInputModel, IObserver, IQuestionModel, TSymbol} from '../types';
 import Calculator from './calculator';
 import InputMatrix from './inputMatrix';
 
@@ -10,7 +10,8 @@ export default class QuestionsModel implements IQuestionModel {
     public cursor: number;
 
     public question: string;
-    public answers: IAnswer[];
+    public answerAreas: IAnswerArea[];
+    public answers: string[];
     public focusedArea: number;
 
     private observers: IObserver[];
@@ -20,6 +21,7 @@ export default class QuestionsModel implements IQuestionModel {
         this.cursor = 0;
 
         this.question = '';
+        this.answerAreas = [];
         this.answers = [];
         this.focusedArea = 0;
 
@@ -145,14 +147,16 @@ export default class QuestionsModel implements IQuestionModel {
                 return katex.renderToString(match.substring(2, match.length - 2));
             });
 
-            this.answers = json.answers.map(val => {
+            this.answerAreas = json.answers.map(val => {
                 return {
                     calcArea: new Calculator(),
-                    correctAns: val.value,
                     label: val.label,
                     correct: -1,
-                } as IAnswer;
+                } as IAnswerArea;
             });
+            this.answers = json.answers.map(val => val.value);
+
+            this.focusedArea = 0;
         })
         .catch(err => console.error(err));
 
@@ -160,16 +164,26 @@ export default class QuestionsModel implements IQuestionModel {
     }
 
     public submit(): void {
-        for (let ans of this.answers) {
-            let submittedAns: string = ans.calcArea.toString();
-            ans.correct = (submittedAns === ans.correctAns) ? 1 : 0;
-            console.log(ans.correct);
+        // Indices of questions answered correctly
+        let corrAnsI: number[] = [];
+
+        for (let ans of this.answerAreas) {
+            ans.correct = 0;
+            for (let i = 0; i < this.answers.length; i++) {
+                let correctAns: string = this.answers[i];
+                let submittedAns: string = ans.calcArea.toString();
+
+                if (!corrAnsI.includes(i) && submittedAns === correctAns) {
+                    ans.correct = 1;
+                    corrAnsI.push(i);
+                }
+            }
         }
         this.update();
     }
 
     public getFocusedArea(): IInputModel {
-        return this.answers[this.focusedArea].calcArea;
+        return this.answerAreas[this.focusedArea].calcArea;
     }
 
     private encodeOptions(options: {[key: string]: string}): string {
