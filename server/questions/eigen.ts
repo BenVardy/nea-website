@@ -46,7 +46,7 @@ export default class Eigen implements IQuestion {
 
             this.answers.push({
                 label: `eigenvector${i}`,
-                value: result.eigenvector.toString()
+                value: new Matrix(result.eigenvector.getArr().map(row => [row])).toString()
             });
         }
 
