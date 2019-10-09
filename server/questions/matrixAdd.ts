@@ -15,7 +15,7 @@ export default class MatrixAdd implements IQuestion {
 
         let result: Matrix = matrices[0].add(matrices[1]);
 
-        this.question = matrices.map(matrix => matrix.toLatex()).join('+') + '=';
+        this.question = `$$${matrices.map(matrix => matrix.toLatex()).join('+')}=$$`;
         this.answers = [{
             label: '',
             value: result.toString()

@@ -141,7 +141,9 @@ export default class QuestionsModel implements IQuestionModel {
         await fetch(`/api/question/${type}/?${this.encodeOptions(options)}`)
         .then(res => res.json())
         .then((json: IAPIQuestionResult) => {
-            this.question = katex.renderToString(json.question);
+            this.question = json.question.replace(/\$\$(.*)\$\$/g, (match): string => {
+                return katex.renderToString(match.substring(2, match.length - 2));
+            });
 
             this.answers = json.answers.map(val => {
                 return {

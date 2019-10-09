@@ -41,9 +41,12 @@ export default class Questions implements IObserver {
 
         this.inputChar = this.inputChar.bind(this);
         this.ansElemContainer.addEventListener('keydown', this.inputChar);
+
         this.ansElemContainer.tabIndex = 0;
         this.ansElemContainer.focus();
         this.root.appendChild(this.ansElemContainer);
+
+        this.handleFocusChange = this.handleFocusChange.bind(this);
 
         this.update(this.model);
     }
@@ -54,7 +57,7 @@ export default class Questions implements IObserver {
 
         this.ansElemContainer.innerHTML = '';
 
-        this.ansElemContainer.append(...newModel.answers.map(ans => {
+        this.ansElemContainer.append(...newModel.answers.map((ans, i) => {
             let ansArea: IInputModel = ans.calcArea;
 
             let ansElem = document.createElement('div');
@@ -73,10 +76,12 @@ export default class Questions implements IObserver {
                 ansArea.calculation,
                 ansArea.inMatrix(),
                 ansArea.cursor,
-                true
+                newModel.focusedArea === i
             );
             if (ansLatex === '') ansElem.innerHTML = '&nbsp;';
             else katex.render(ansLatex, ansElem);
+
+            ansElem.addEventListener('click', () => this.handleFocusChange(i));
 
             return ansElem;
         }));
@@ -102,7 +107,7 @@ export default class Questions implements IObserver {
         this.controller.getQuestion(type, {});
     }
 
-    private handleFocusChange(): void {
-
+    private handleFocusChange(i: number): void {
+        this.controller.changeFocus(i);
     }
 }

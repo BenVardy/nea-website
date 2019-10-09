@@ -17,5 +17,9 @@ export const buttons: IQuestionButton[] = [
     {
         label: 'Matrix Add',
         type: 'matrixadd'
+    },
+    {
+        label: 'Eigenthings',
+        type: 'eigen'
     }
 ];
