@@ -3,8 +3,11 @@ import { IQuestionButton } from '../types';
 export const commands = {
     '[': 'Begin matrix',
     ']': 'End matrix',
+    'Arrow Keys': 'Navigation',
     'Enter (In Matrix)': 'Return',
-    'Enter': 'Execute'
+    'Enter': 'Execute',
+    'eigen(M)': 'Finds the eigenvalues and eigenvectors of M',
+    'det(M)': 'Returns the determinate of M'
 } as {
     [key: string]: string
 };
