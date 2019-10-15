@@ -1,11 +1,25 @@
+@import '../styles/vars.scss';
 
 #calculator-root {
     border: 1px solid black;
-    // outline: 0;
-    text-align: right;
-    width: 100%;
+    margin: 0 auto $unit;
+    outline: 0;
+    overflow: hidden;
+    // text-align: right;
+    width: 50%;
 }
 
 .calculation {
-    padding: 4px;
+    padding: $unit / 2;
+}
+
+.usage {
+    margin: 0 auto;
+    width: -webpack-calc(50% + 2px);
+    width: -moz-calc(50% + 2px);
+    width: calc(50% + 2px);
+}
+
+.usage-table {
+    width: 100%;
 }

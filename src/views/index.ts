@@ -1,46 +1,36 @@
 import katex from 'katex';
-import fontLoader from 'webfontloader';
 
-import Controller from '../controllers/controller';
+import CalcController from '../controllers/calcController';
 import Calculator from '../models/calculator';
-import { IController, IModel, IObservable, IView } from '../types';
+import { ICalcModel, IController, IObservable, IObserver} from '../types';
 
-import 'katex/dist/katex.min.css';
+import {commands} from '../models/statics';
+
 import './index.scss';
 
 /**
  * The representation of the DOM in the MVC
  */
-export default class Index implements IView {
+export default class Index implements IObserver {
     // Properties
-    private model: IModel;
+    private model: ICalcModel;
     private controller: IController;
 
     // The root element
     private docRoot: HTMLElement;
-
     private calcRoot: HTMLElement;
+
+    private showCursor: boolean;
 
     // Methods
     /**
      * Creates a new Document
      */
-    public constructor() {
-        // Load fonts
-        fontLoader.load({
-            custom: {
-                families: ['KaTeX_Size1', 'KaTeX_Size3', 'KaTeX_Size4', 'KaTeX_Math'],
-                urls: ['/main.css']
-            }
-        });
-
-        let tempRoot = document.getElementById('root');
-        if (!tempRoot) throw Error('No Root set in html');
-
-        this.docRoot = tempRoot;
+    public constructor(root: HTMLElement) {
+        this.docRoot = root;
 
         this.model = new Calculator();
-        this.controller = new Controller();
+        this.controller = new CalcController();
 
         this.model.addObserver(this);
         this.controller.setModel(this.model);
@@ -48,26 +38,32 @@ export default class Index implements IView {
         this.calcRoot = document.createElement('div');
         this.calcRoot.id = 'calculator-root';
 
-        this.calcRoot.tabIndex = -1;
+        this.calcRoot.tabIndex = 0;
         this.inputChar = this.inputChar.bind(this);
 
         this.calcRoot.addEventListener('keydown', this.inputChar);
+
+        this.calcRoot.addEventListener('focusin', () => {
+            this.showCursor = true;
+            this.update(this.model);
+        });
+
+        this.calcRoot.addEventListener('focusout', () => {
+            this.showCursor = false;
+            this.model.navEnd();
+            this.update(this.model);
+        });
 
         document.onreadystatechange = () => {
             if (document.readyState === 'complete') this.calcRoot.focus();
         };
 
+        this.docRoot.appendChild(this.calcRoot);
+        this.docRoot.appendChild(this.staticUsage());
+
+        this.showCursor = true;
+
         this.update(this.model);
-    }
-
-    /**
-     * Handles the keydown event in the webpage
-     * @param e The event passed from the "keydown" event
-     */
-    public inputChar(e: KeyboardEvent): void {
-        let {key, keyCode} = e;
-
-        this.controller.parseChar(key, keyCode);
     }
 
     /**
@@ -75,38 +71,44 @@ export default class Index implements IView {
      * @param source The model
      */
     public update(source: IObservable) {
-        let newModel = source as IModel;
+        let newModel = source as ICalcModel;
 
-        this.docRoot.innerHTML = '';
         this.setCalculatorHtml(newModel);
-        this.docRoot.appendChild(this.calcRoot);
+    }
 
-        this.docRoot.appendChild(this.getQuestionHtml(newModel));
+    /**
+     * Handles the keydown event in the webpage
+     * @param e The event passed from the "keydown" event
+     */
+    private inputChar(e: KeyboardEvent): void {
+        let {key, keyCode} = e;
 
-        this.calcRoot.focus();
+        this.controller.parseChar(key, keyCode);
     }
 
     /**
      * Sets Html for the calculator section in CalcRoot
      */
-    private setCalculatorHtml(model: IModel): void {
+    private setCalculatorHtml(model: ICalcModel): void {
         this.calcRoot.innerHTML = '';
 
         // The root for the calculator section
         let calculation: HTMLElement = document.createElement('div');
         calculation.className = 'calculation';
 
-        katex.render(Calculator.toLatex(
+        let calcLatex: string = Calculator.toLatex(
             model.calculation,
-            model.inMatrix,
+            model.inMatrix(),
             model.cursor,
-            true
-        ), calculation);
+            this.showCursor
+        );
+        if (calcLatex === '') calculation.innerHTML = '&nbsp;';
+        else katex.render(calcLatex, calculation);
 
         let resultELem: HTMLElement = document.createElement('div');
         resultELem.className = 'result calculation';
 
-        let resultLatex: string = Calculator.toLatex(model.results, model.inMatrix, model.cursor, false);
+        let resultLatex: string = Calculator.toLatex(model.results, model.inMatrix(), model.cursor, false, true);
         if (resultLatex === '') resultELem.innerHTML = '&nbsp;';
         else katex.render(resultLatex, resultELem);
 
@@ -118,15 +120,57 @@ export default class Index implements IView {
         this.calcRoot.appendChild(errorElem);
     }
 
-    /**
-     * Gets html for the questions section
-     */
-    private getQuestionHtml(model: IModel): HTMLElement {
-        // The root for the questions section
-        let questions: HTMLElement = document.createElement('div');
-        questions.className = 'questions-root';
+    private staticUsage(): HTMLElement {
+        let container = document.createElement('div');
+        container.className = 'usage';
 
-        return questions;
+        let tableContainer = document.createElement('div');
+        tableContainer.className = 'usage-table mdc-data-table';
+
+        let table = document.createElement('table');
+        table.className = 'mdc-data-table__table';
+
+        let tableHead = document.createElement('thead');
+
+        let tHeadRow = document.createElement('tr');
+        tHeadRow.className = 'mdc-data-table__header-row';
+
+        tHeadRow.append(...['Key', 'Command'].map(value => {
+            let th = document.createElement('th');
+            th.className = 'mdc-data-table__header-cell';
+            th.setAttribute('role', 'collumnheader');
+            th.setAttribute('scope', 'col');
+
+            th.innerHTML = value;
+            return th;
+        }));
+
+        tableHead.appendChild(tHeadRow);
+        table.appendChild(tableHead);
+
+        let tableBody = document.createElement('tbody');
+        tableBody.className = 'mdc-data-table__content';
+
+        tableBody.append(...Object.keys(commands).map(key => {
+            let value: string = commands[key];
+            let tr = document.createElement('tr');
+            tr.className = 'mdc-data-table__row';
+
+            tr.append(...[key, value].map(val => {
+                let td = document.createElement('td');
+                td.className = 'mdc-data-table__cell';
+                td.innerHTML = val;
+
+                return td;
+            }));
+
+            return tr;
+        }));
+
+        table.appendChild(tableBody);
+        tableContainer.appendChild(table);
+        container.appendChild(tableContainer);
+
+        return container;
     }
-
 }

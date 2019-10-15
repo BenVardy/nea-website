@@ -55,6 +55,7 @@ module.exports = {
     devtool: 'inline-source-map',
     devServer: {
         contentBase: path.resolve(__dirname, 'build/public'),
+        historyApiFallback: true,
         port: 3000,
         proxy: {
             '/api': {

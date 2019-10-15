@@ -1,10 +1,10 @@
 import express from 'express';
 import execCalc from './calculator/execCalc';
 import exprMap from './calculator/exprMap';
-import { Matrix, Vector } from './calculator/models';
+import { Matrix, Vector, RandomMatrix, gaussianElimination } from './calculator/models';
 import shuntingYard from './calculator/shuntingYard';
-import { IQuestionOptions, TCalc } from './types';
-import MatrixMult from './questions/matrixMult';
+import questions from './questions';
+import { IQuestionOptions, TCalc, TQuestion } from './types';
 
 function joinRegex(...regex: RegExp[]): RegExp {
     return new RegExp(regex.map(item => item.source).join('|'), 'gi');
@@ -27,9 +27,9 @@ router.get('/', (req, res) => {
     if (!body && typeof(body) !== 'string') return res.status(400);
 
     let partsArr: string[] | null = body
-        .replace(/[\s]/g, '')
+        .replace(new RegExp('(?<!])-(\\(?' + joinRegex(/(-1|\+?[\d\.]+)/, MATRIX_REGEX).source + ')(?![\\w\\s]*[\\]])', 'g'), '+(-1*$1)')
+        .replace(/(^\+)|(?<=\(|\^)\+|\s/g, '')
         .replace(/([\d\]\)])([\(\[])/g, '$1*$2')
-        .replace(/^-/g, '-1*')
         .match(joinRegex(
             NUMBER_REGEX,
             EXPR_REGEX,
@@ -70,6 +70,7 @@ router.get('/', (req, res) => {
                 };
             }
         });
+        console.log(calc);
 
         let postFix: TCalc[] = shuntingYard(calc);
         let result: any[] = execCalc(postFix).map(result => {
@@ -81,7 +82,7 @@ router.get('/', (req, res) => {
 
         res.status(200).json(result);
     } catch (ex) {
-        console.log(ex.message);
+        console.log(ex);
         res.status(400).json({message: ex.message});
     }
 });
@@ -93,12 +94,44 @@ router.get('/question/:type', (req, res) => {
 
     let query: IQuestionOptions = qTemp;
 
-    switch (type) {
-        case 'matrixMult':
-            return res.status(200).send(new MatrixMult(query));
-        default:
-            return res.status(400);
+    let question: TQuestion | undefined = questions[type];
+    if (question) {
+        return res.json(new question(query));
+    } else {
+        return res.sendStatus(400);
     }
+});
+
+router.get('/404', (req, res) => {
+    let matrix: Matrix;
+    let four0four = new Vector([4, 0, 4]);
+    let result: number[] = [];
+
+    do {
+        matrix = new RandomMatrix(3, 3, 10);
+        try {
+            result = gaussianElimination(
+                new Matrix(matrix.transposed().getArr().concat([four0four.getArr()])
+            ).transposed().getArr());
+        } catch (ex) {
+            continue;
+        }
+    } while (result.length === 0);
+
+    res.status(200).json([
+        {
+            type: 'matrix',
+            data: matrix.toString()
+        },
+        {
+            type: 'matrix',
+            data: new Vector(result).toString()
+        },
+        {
+            type: 'matrix',
+            data: four0four.toString()
+        }
+    ]);
 });
 
 router.get('/coffee', (req, res) => {

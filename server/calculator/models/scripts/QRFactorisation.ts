@@ -86,9 +86,13 @@ export function QR(a: Matrix): QR_Result[] {
             r = q.transposed().multiply(ak);
             ak = r.multiply(q);
             j++;
+            if (j > 10000) {
+                console.log(ak.toString());
+                throw Error('Has imaginary eigenvalues');
+            }
         } while (Math.round((ak.diagProduct() - detA) * 100000000000) !== 0);
 
-        // console.log(`Iterations=${j}`);
+        console.log(`Iterations=${j}`);
         for (let i = 0; i < ak.getDim(0); i++) {
             eigenvalues.push(ak._(i, i));
         }

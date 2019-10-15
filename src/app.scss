@@ -1,0 +1,14 @@
+@import './styles/vars.scss';
+
+@import '@material/data-table/mdc-data-table';
+
+@import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
+
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+}
+
+.page {
+    margin: $unit;
+}

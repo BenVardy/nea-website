@@ -1,19 +1,19 @@
-import { IController, IModel } from '../types';
+import { IController, IInputModel } from '../types';
 
 /**
  * The Controller in the MVC
  * Does input parsing
  */
-export default class Controller implements IController {
+export default class CalcController implements IController {
     // Properties
-    private model?: IModel;
+    protected model?: IInputModel;
 
     // Methods
     /**
      * Sets the model property
      * @param model The model to set
      */
-    public setModel(model: IModel) {
+    public setModel(model: IInputModel) {
         this.model = model;
     }
 
@@ -28,7 +28,7 @@ export default class Controller implements IController {
         // model could be undefined
         if (!model) return;
 
-        if (model.inMatrix) {
+        if (model.inMatrix()) {
             if (key.match(/^[\-\d\.]$/)) {
                 model.addToMatrix(key);
             } else {
@@ -44,6 +44,7 @@ export default class Controller implements IController {
                             model.matrixNav(0);
                             break;
                         }
+                        // Don't break if it should exit matrix to left
                     // I know its not number order
                     case 219: // Left Square Bracket
                         // endMatrix(forwards: boolean) -> false == don't move the cursor forwards
@@ -67,7 +68,7 @@ export default class Controller implements IController {
         } else {
             if (key.match(/^[\d\.]$/)) {
                 model.addToCalc(key);
-            } else if (key.match(/^[a-z+*/x\-()]$/)) {
+            } else if (key.match(/^[a-z+*/\^\-()]$/)) {
                 model.addToCalc(key);
             } else {
                 switch (keyCode) {
@@ -75,7 +76,7 @@ export default class Controller implements IController {
                         model.backspace();
                         break;
                     case 13: // Return
-                        model.calculate();
+                        model.submit();
                         break;
                     case 35:
                         model.navEnd();

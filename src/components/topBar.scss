@@ -1,0 +1,10 @@
+@import '../styles/vars.scss';
+
+.top-bar {
+    background-color: $primary;
+    display: inline-block;
+    height: $unit * 6;
+    margin: auto !important;
+    padding: $unit 0;
+    width: 100%;
+}

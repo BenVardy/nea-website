@@ -1,17 +1,17 @@
 import katex from 'katex';
 
-import { IAPIError, IAPIResult, IModel, IObserver, TSymbol } from '../types';
+import { IAPIError, IAPIResult, ICalcModel, IObserver, TSymbol } from '../types';
 import InputMatrix from './inputMatrix';
 
-export default class Calculator implements IModel {
+export default class Calculator implements ICalcModel {
 
     // Statics
     /**
      * Converts an array of numbers, expressions and matrices to latex
      * @param symArr The array of symbols
      */
-    public static toLatex(symArr: TSymbol[], inMatrix: boolean, cursor: number, showCursor: boolean): string {
-
+    // tslint:disable-next-line: max-line-length
+    public static toLatex(symArr: TSymbol[], inMatrix: boolean, cursor: number, showCursor: boolean, commas: boolean = false): string {
         let latex: string = symArr.map((sym, i) => {
             let part: string;
             if (typeof(sym) === 'string') {
@@ -22,12 +22,11 @@ export default class Calculator implements IModel {
             }
 
             return part + (showCursor && !inMatrix && cursor - 1 === i ? '|' : '');
-        }).join('');
+        }).join(commas ? ',' : '');
 
         if (showCursor && !inMatrix && cursor === 0) latex = '|' + latex;
 
-        latex = latex.replace(/\*/g, '\\cdot');
-        // latex = latex.replace(/\((.*)\)(\|?)\/(\|?)\((.*)\)/g, '\\frac{$1$2}{$3$4}');
+        latex = latex.replace(/\*/g, '\\cdot').replace(/\^/g, '\\char`\\^');
 
         latex = this.fixBrackets(latex).replace(/\(/g, '\\left(').replace(/\)/g, '\\right)');
 
@@ -52,15 +51,14 @@ export default class Calculator implements IModel {
     }
 
     // Properties
-    public inMatrix: boolean;
     public calculation: TSymbol[];
     public results: TSymbol[];
     public error: string;
-
     public cursor: number;
 
+    // tslint:disable-next-line: variable-name
+    private _inMatrix: boolean;
     private observers: IObserver[];
-
     private clearNext: boolean;
 
     // Methods
@@ -76,7 +74,11 @@ export default class Calculator implements IModel {
         this.cursor = 0;
 
         this.clearNext = false;
-        this.inMatrix = false;
+        this._inMatrix = false;
+    }
+
+    public inMatrix(): boolean {
+        return this._inMatrix;
     }
 
     /**
@@ -112,12 +114,7 @@ export default class Calculator implements IModel {
      */
     public addToCalc(...s: TSymbol[]): void {
 
-        // if (this.clearNext) {
-        //     this.clearNext = false;
-
-        //     this.calculation = [];
-        //     this.results = [];
-        // }
+        if (this.clearNext) this.resetCalc();
 
         for (let item of s) {
             this.calculation.splice(this.cursor, 0, item);
@@ -130,13 +127,13 @@ export default class Calculator implements IModel {
      * Creates a new Matrix for the calculation
      */
     public newMatrix(): void {
-        if (this.inMatrix) throw new Error('Must end matrix first');
+        if (this._inMatrix) throw new Error('Must end matrix first');
 
         this.addToCalc(new InputMatrix());
         // When addToCalc is called it adds 1 to the cursor event thought
         // we haven't moved on so we must fix the cursor by moving it back by 1
         this.cursor--;
-        this.inMatrix = true;
+        this._inMatrix = true;
         this.update();
     }
 
@@ -146,10 +143,10 @@ export default class Calculator implements IModel {
      * Closes the current matrix and adds it to the calculation
      */
     public endMatrix(forwards?: boolean): void {
-        if (!this.inMatrix) throw new Error('Not in matrix');
+        if (!this._inMatrix) throw new Error('Not in matrix');
         if (forwards === undefined) forwards = true;
 
-        this.inMatrix = false;
+        this._inMatrix = false;
         // Must manually move the cursor on
         if  (forwards) this.cursor++;
         this.update();
@@ -195,7 +192,7 @@ export default class Calculator implements IModel {
             this.navRight();
             this.backspace();
 
-            this.inMatrix = false;
+            this._inMatrix = false;
         }
         this.update();
     }
@@ -218,7 +215,7 @@ export default class Calculator implements IModel {
 
             let currentItem = this.calculation[this.cursor];
 
-            this.inMatrix = typeof(currentItem) !== 'string';
+            this._inMatrix = typeof(currentItem) !== 'string';
             this.update();
         }
     }
@@ -228,7 +225,7 @@ export default class Calculator implements IModel {
      */
     public navRight(): void {
         let currentItem = this.calculation[this.cursor];
-        if (!this.inMatrix && currentItem && typeof(currentItem) !== 'string') this.inMatrix = true;
+        if (!this._inMatrix && currentItem && typeof(currentItem) !== 'string') this._inMatrix = true;
         else if (this.cursor < this.calculation.length) this.cursor++;
         this.update();
     }
@@ -247,21 +244,22 @@ export default class Calculator implements IModel {
      * Delete the last item
      */
     public backspace(): void {
-        if (this.cursor > 0) {
-            let wasInMatrix: boolean = this.inMatrix;
+        if (this.clearNext) this.resetCalc();
+        else if (this.cursor > 0) {
+            let wasInMatrix: boolean = this._inMatrix;
             this.calculation.splice(this.cursor - 1, 1);
             this.navLeft();
 
-            if (!wasInMatrix && this.inMatrix) this.inMatrix = false;
-
-            this.update();
+            if (!wasInMatrix && this._inMatrix) this._inMatrix = false;
         }
+
+        this.update();
     }
 
     /**
      * Performs the final calculation
      */
-    public calculate(): void {
+    public submit(): void {
         let {calculation} = this;
         let joinedCalc: string = '';
         try {
@@ -306,15 +304,34 @@ export default class Calculator implements IModel {
         });
     }
 
+    public toString(): string {
+        return this.calculation.map(val => {
+            if (typeof(val) === 'string') return val;
+            else return val.toString();
+        }).join('');
+    }
+
     /**
      * Should only be run when in a matrix
      * Gets the current matrix
      */
     private getCurrentMatrix(): InputMatrix {
-        if (!this.inMatrix) throw new Error('Not in matrix');
+        if (!this._inMatrix) throw new Error('Not in matrix');
         let sym = this.calculation[this.cursor];
         if (!InputMatrix.isInputMatrix(sym)) throw new Error('Cursor not in matrix');
 
         return sym;
+    }
+
+    /**
+     * Resets the calculation
+     */
+    private resetCalc(): void {
+        this.clearNext = false;
+
+        this.calculation = [];
+        this.results = [];
+        this._inMatrix = false;
+        this.cursor = 0;
     }
 }

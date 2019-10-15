@@ -1,0 +1,33 @@
+@import '../styles/vars.scss';
+
+.question {
+    margin-left: $unit;
+}
+
+.ans-area-container {
+    outline: 0;
+}
+
+.ans-area {
+    border: 1px solid black;
+    display: inline-block;
+    margin: $unit $unit;
+    max-width: 25%;
+    min-width: 100px;
+    min-height: $unit * 3;
+    overflow: hidden;
+    padding: $unit;
+    text-align: center;
+}
+
+.ans-area > span {
+    vertical-align: middle;
+}
+
+.correct-ans {
+    border-color: green;
+}
+
+.incorrect-ans {
+    border-color: red;
+}

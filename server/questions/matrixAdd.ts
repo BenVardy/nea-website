@@ -1,7 +1,7 @@
 import { Matrix, RandomMatrix } from '../calculator/models';
-import { IQuestion, IQuestionOptions, IAnswer } from '../types';
+import { IAnswer, IQuestion, IQuestionOptions } from '../types';
 
-export default class MatrixMult implements IQuestion {
+export default class MatrixAdd implements IQuestion {
     public question: string;
     public answers: IAnswer[];
 
@@ -13,12 +13,12 @@ export default class MatrixMult implements IQuestion {
 
         let matrices: Matrix[] = new Array(2).fill([]).map(() => new RandomMatrix(noRows, noCols, maxNo, ints ? 0 : 1));
 
-        let result: Matrix = matrices[0].multiply(matrices[1]);
+        let result: Matrix = matrices[0].add(matrices[1]);
 
-        this.question = `$$${matrices.map(matrix => matrix.toLatex()).join(' ')}=$$`;
-        this.answers = [ {
+        this.question = `$$${matrices.map(matrix => matrix.toLatex()).join('+')}=$$`;
+        this.answers = [{
             label: '',
             value: result.toString()
-        } ];
+        }];
     }
 }
