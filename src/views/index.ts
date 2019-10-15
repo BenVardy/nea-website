@@ -50,7 +50,7 @@ export default class Index implements IObserver {
 
         this.calcRoot.addEventListener('focusout', () => {
             this.showCursor = false;
-            this.model.navEnd();
+            this.model.nav(6);
             this.update(this.model);
         });
 

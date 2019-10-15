@@ -164,40 +164,6 @@ export default class Calculator implements ICalcModel {
     }
 
     /**
-     * Moves the cursor in the matrix
-     * @param dir 0 = Left; 1 = Up; 2 = Right; 3 = Down; 4 = Return
-     */
-    public matrixNav(dir: (0|1|2|3|4)): void {
-        let cm: InputMatrix = this.getCurrentMatrix();
-
-        // Select the correct function based on dir
-        [
-            () => { if (cm) cm.navLeft(); },
-            () => { if (cm) cm.navUp(); },
-            () => { if (cm) cm.navRight(); },
-            () => { if (cm) cm.navDown(); },
-            () => { if (cm) cm.return(); }
-        ][dir]();
-        this.update();
-    }
-
-    /**
-     * Performs a backspace on the current matrix
-     */
-    public matrixBackspace(): void {
-        let currentMatrix: InputMatrix = this.getCurrentMatrix();
-
-        if (!this.shouldExitMatrix(true)) currentMatrix.backspace();
-        else {
-            this.navRight();
-            this.backspace();
-
-            this._inMatrix = false;
-        }
-        this.update();
-    }
-
-    /**
      * Checks if moving the cursor should exit the matrix
      */
     public shouldExitMatrix(del: boolean): boolean {
@@ -207,50 +173,45 @@ export default class Calculator implements ICalcModel {
     }
 
     /**
-     * Move the cursor to the left
+     * When not in a matrix 1, 3, and 4 do nothing
+     * @param dir 0 = Left; 1 = Up; 2 = Right; 3 = Down; 4 = Return; 5 = Home; 6 = End
      */
-    public navLeft(): void {
-        if (this.cursor > 0) {
-            this.cursor--;
-
-            let currentItem = this.calculation[this.cursor];
-
-            this._inMatrix = typeof(currentItem) !== 'string';
-            this.update();
+    public nav(dir: (0|1|2|3|4|5|6)): void {
+        if (this.inMatrix()) {
+            this.matrixNav(dir);
+        } else {
+            // The blank functions are for values of dir that do nothing
+            // when not in a matrix
+            [
+                this.navLeft,
+                () => {},
+                this.navRight,
+                () => {},
+                () => {},
+                this.navHome,
+                this.navEnd
+            ][dir]();
         }
-    }
-
-    /**
-     * Move the cursor to the right
-     */
-    public navRight(): void {
-        let currentItem = this.calculation[this.cursor];
-        if (!this._inMatrix && currentItem && typeof(currentItem) !== 'string') this._inMatrix = true;
-        else if (this.cursor < this.calculation.length) this.cursor++;
-        this.update();
-    }
-
-    public navHome(): void {
-        this.cursor = 0;
-        this.update();
-    }
-
-    public navEnd(): void {
-        this.cursor = this.calculation.length;
-        this.update();
     }
 
     /**
      * Delete the last item
      */
     public backspace(): void {
-        if (this.clearNext) this.resetCalc();
-        else if (this.cursor > 0) {
-            let wasInMatrix: boolean = this._inMatrix;
-            this.calculation.splice(this.cursor - 1, 1);
-            this.navLeft();
+        switch (this.inMatrix()) {
+            case true:
+                let exited: boolean = this.matrixBackspace();
+                if (!exited) break;
+            default:
+                if (this.clearNext) this.resetCalc();
+                else if (this.cursor > 0) {
+                    let wasInMatrix: boolean = this._inMatrix;
+                    this.calculation.splice(this.cursor - 1, 1);
+                    this.navLeft();
 
-            if (!wasInMatrix && this._inMatrix) this._inMatrix = false;
+                    this._inMatrix = false;
+                }
+                break;
         }
 
         this.update();
@@ -309,6 +270,74 @@ export default class Calculator implements ICalcModel {
             if (typeof(val) === 'string') return val;
             else return val.toString();
         }).join('');
+    }
+
+    /**
+     * Moves the cursor in the matrix
+     * @param dir 0 = Left; 1 = Up; 2 = Right; 3 = Down; 4 = Return
+     */
+    private matrixNav(dir: (0|1|2|3|4|5|6)): void {
+        let cm: InputMatrix = this.getCurrentMatrix();
+
+        if (dir >= 5) return;
+
+        // Select the correct function based on dir
+        [
+            () => { if (cm) cm.navLeft(); },
+            () => { if (cm) cm.navUp(); },
+            () => { if (cm) cm.navRight(); },
+            () => { if (cm) cm.navDown(); },
+            () => { if (cm) cm.return(); }
+        ][dir]();
+        this.update();
+    }
+
+    /**
+     * Performs a backspace on the current matrix
+     */
+    private matrixBackspace(): boolean {
+        let currentMatrix: InputMatrix = this.getCurrentMatrix();
+
+        if (!this.shouldExitMatrix(true)) currentMatrix.backspace();
+        else {
+            this.navRight();
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Move the cursor to the left
+     */
+    private navLeft(): void {
+        if (this.cursor > 0) {
+            this.cursor--;
+
+            let currentItem = this.calculation[this.cursor];
+
+            this._inMatrix = typeof(currentItem) !== 'string';
+            this.update();
+        }
+    }
+
+    /**
+     * Move the cursor to the right
+     */
+    private navRight(): void {
+        let currentItem = this.calculation[this.cursor];
+        if (!this._inMatrix && currentItem && typeof(currentItem) !== 'string') this._inMatrix = true;
+        else if (this.cursor < this.calculation.length) this.cursor++;
+        this.update();
+    }
+
+    private navHome(): void {
+        this.cursor = 0;
+        this.update();
+    }
+
+    private navEnd(): void {
+        this.cursor = this.calculation.length;
+        this.update();
     }
 
     /**
