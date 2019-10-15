@@ -88,7 +88,7 @@ export function QR(a: Matrix): QR_Result[] {
             j++;
             if (j > 10000) {
                 console.log(ak.toString());
-                throw Error('Error while getting eigenvalues');
+                throw Error('Has imaginary eigenvalues');
             }
         } while (Math.round((ak.diagProduct() - detA) * 100000000000) !== 0);
 
