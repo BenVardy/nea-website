@@ -10,6 +10,16 @@ export interface IObservable {
     update(): void;
 }
 
+export enum Nav {
+    LEFT = 0,
+    UP,
+    RIGHT,
+    DOWN,
+    RETURN,
+    HOME,
+    END
+}
+
 export interface IInputModel extends IObservable {
     calculation: TSymbol[];
     cursor: number;
@@ -24,17 +34,14 @@ export interface IInputModel extends IObservable {
      */
     endMatrix(forwards?: boolean): void;
     addToMatrix(c: string): void;
-    /**
-     * @param dir 0 = Left; 1 = Up; 2 = Right; 3 = Down; 4 = Return
-     */
-    matrixNav(dir: (0|1|2|3|4)): void;
-    matrixBackspace(): void;
+
     shouldExitMatrix(del: boolean): boolean;
 
-    navLeft(): void;
-    navRight(): void;
-    navHome(): void;
-    navEnd(): void;
+    /**
+     * When not in a matrix only inputs of 1 and 2 do anything
+     * @param dir 0 = Left; 1 = Up; 2 = Right; 3 = Down; 4 = Return; 5 = Home; 6 = End
+     */
+    nav(dir: Nav): void;
     backspace(): void;
 
     submit(): void;

@@ -1,6 +1,6 @@
 import katex from 'katex';
 
-import {IAnswerArea, IAPIQuestionResult, IInputModel, IObserver, IQuestionModel, TSymbol} from '../types';
+import {IAnswerArea, IAPIQuestionResult, IInputModel, IObserver, IQuestionModel, Nav, TSymbol} from '../types';
 import Calculator from './calculator';
 import InputMatrix from './inputMatrix';
 
@@ -84,38 +84,13 @@ export default class QuestionsModel implements IQuestionModel {
         this.update();
     }
 
-    public matrixNav(dir: (0|1|2|3|4)): void {
-        this.getFocusedArea().matrixNav(dir);
-        this.update();
-    }
-
-    public matrixBackspace(): void {
-        this.getFocusedArea().matrixBackspace();
-        this.update();
+    // Safe to just pass off to area
+    public nav(dir: Nav): void {
+        this.getFocusedArea().nav(dir);
     }
 
     public shouldExitMatrix(del: boolean): boolean {
         return this.getFocusedArea().shouldExitMatrix(del);
-    }
-
-    public navLeft(): void {
-        this.getFocusedArea().navLeft();
-        this.update();
-    }
-
-    public navRight(): void {
-        this.getFocusedArea().navRight();
-        this.update();
-    }
-
-    public navEnd(): void {
-        this.getFocusedArea().navEnd();
-        this.update();
-    }
-
-    public navHome(): void {
-        this.getFocusedArea().navHome();
-        this.update();
     }
 
     public backspace(): void {

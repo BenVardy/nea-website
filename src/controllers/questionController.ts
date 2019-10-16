@@ -1,5 +1,5 @@
-import { IQuestionController, IQuestionModel } from '../types';
 import InputMatrix from '../models/inputMatrix';
+import { IQuestionController, IQuestionModel, Nav } from '../types';
 
 export default class QuestionController implements IQuestionController {
     protected model?: IQuestionModel;
@@ -31,14 +31,14 @@ export default class QuestionController implements IQuestionController {
             } else {
                 switch (keyCode) {
                     case 8: // Backspace
-                        model.matrixBackspace();
+                        model.backspace();
                         break;
                     case 13: // Return
-                        model.matrixNav(4);
+                        model.nav(Nav.RETURN);
                         break;
                     case 37: // Left Arrow
                         if (!model.shouldExitMatrix(false)) {
-                            model.matrixNav(0);
+                            model.nav(Nav.LEFT);
                             break;
                         }
                         // Don't break if it should exit matrix to left
@@ -48,14 +48,14 @@ export default class QuestionController implements IQuestionController {
                         model.endMatrix(false);
                         break;
                     case 38: // Up Arrow
-                        model.matrixNav(1);
+                        model.nav(Nav.UP);
                         break;
                     case 32: // Space bar
                     case 39: // Right Arrow
-                        model.matrixNav(2);
+                        model.nav(Nav.RIGHT);
                         break;
                     case 40: // Down Arrow
-                        model.matrixNav(3);
+                        model.nav(Nav.DOWN);
                         break;
                     case 221: // Right Square Bracket
                         model.endMatrix();
@@ -76,17 +76,17 @@ export default class QuestionController implements IQuestionController {
                     case 13: // Return
                         model.submit();
                         break;
-                    case 35:
-                        model.navEnd();
+                    case 35: // End
+                        model.nav(Nav.END);
                         break;
                     case 36: // Home
-                        model.navHome();
+                        model.nav(Nav.HOME);
                         break;
                     case 37: // Left Arrow
-                        model.navLeft();
+                        model.nav(Nav.LEFT);
                         break;
                     case 39: // Right Arrow
-                        model.navRight();
+                        model.nav(Nav.RIGHT);
                         break;
                     case 219: // Left Square Bracket
                         // Don't allow a matrix to be inputted unless it is the 1st item
