@@ -1,6 +1,6 @@
 import katex from 'katex';
 
-import {IAnswerArea, IAPIQuestionResult, IInputModel, IObserver, IQuestionModel, TSymbol} from '../types';
+import {IAnswerArea, IAPIQuestionResult, IInputModel, IObserver, IQuestionModel, Nav, TSymbol} from '../types';
 import Calculator from './calculator';
 import InputMatrix from './inputMatrix';
 
@@ -85,7 +85,7 @@ export default class QuestionsModel implements IQuestionModel {
     }
 
     // Safe to just pass off to area
-    public nav(dir: (0|1|2|3|4|5|6)): void {
+    public nav(dir: Nav): void {
         this.getFocusedArea().nav(dir);
     }
 

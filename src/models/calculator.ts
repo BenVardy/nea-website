@@ -1,6 +1,4 @@
-import katex from 'katex';
-
-import { IAPIError, IAPIResult, ICalcModel, IObserver, TSymbol } from '../types';
+import { IAPIError, IAPIResult, ICalcModel, IObserver, Nav, TSymbol } from '../types';
 import InputMatrix from './inputMatrix';
 
 export default class Calculator implements ICalcModel {
@@ -176,20 +174,20 @@ export default class Calculator implements ICalcModel {
      * When not in a matrix 1, 3, and 4 do nothing
      * @param dir 0 = Left; 1 = Up; 2 = Right; 3 = Down; 4 = Return; 5 = Home; 6 = End
      */
-    public nav(dir: (0|1|2|3|4|5|6)): void {
+    public nav(dir: Nav): void {
         if (this.inMatrix()) {
             this.matrixNav(dir);
         } else {
             // The blank functions are for values of dir that do nothing
             // when not in a matrix
             [
-                this.navLeft,
+                () => this.navLeft(),
                 () => {},
-                this.navRight,
+                () => this.navRight(),
                 () => {},
                 () => {},
-                this.navHome,
-                this.navEnd
+                () => this.navHome(),
+                () => this.navEnd()
             ][dir]();
         }
     }
@@ -276,7 +274,7 @@ export default class Calculator implements ICalcModel {
      * Moves the cursor in the matrix
      * @param dir 0 = Left; 1 = Up; 2 = Right; 3 = Down; 4 = Return
      */
-    private matrixNav(dir: (0|1|2|3|4|5|6)): void {
+    private matrixNav(dir: Nav): void {
         let cm: InputMatrix = this.getCurrentMatrix();
 
         if (dir >= 5) return;

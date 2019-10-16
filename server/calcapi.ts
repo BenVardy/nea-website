@@ -70,7 +70,6 @@ router.get('/', (req, res) => {
                 };
             }
         });
-        console.log(calc);
 
         let postFix: TCalc[] = shuntingYard(calc);
         let result: any[] = execCalc(postFix).map(result => {

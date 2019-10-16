@@ -13,7 +13,6 @@ export default class Eigen implements IQuestion {
         const eigenvalues: boolean = options.eigenvalues || true;
         const eigenvectors: boolean = options.eigenvectors || true;
 
-        console.log('start');
         let matrix: Matrix;
         let results: QR_Result[];
 
@@ -24,7 +23,6 @@ export default class Eigen implements IQuestion {
             try {
                 results = QR(matrix);
             } catch (ex) {
-                console.log(ex.message);
                 continue;
             }
             break;
