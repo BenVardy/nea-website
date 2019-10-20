@@ -41,7 +41,7 @@ function findEigenvectors(matrix: Matrix, lambda: number): Vector {
         }
 
         output.splice(k, 0, 1);
-        return new Vector(output).asUnit();
+        return new Vector(output);
     }
 
     return new ZeroVector(matrix.getDim(0));
