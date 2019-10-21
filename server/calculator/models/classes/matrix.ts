@@ -1,4 +1,4 @@
-import Vector from './vector';
+import { QR, QR_Result, Vector, ZeroMatrix } from '..';
 
 /**
  * A matrix
@@ -25,9 +25,23 @@ export default class Matrix {
      * Sets up a new matrix with the array provided
      * @param arr The array to populate the matrix with
      */
-    public constructor(arr: number[][]) {
-        this.arr = arr;
-        this.dimensions = [arr.length, arr[0].length];
+    public constructor(arr: number[][]);
+    /**
+     * @param arr The columns of the matrix as vectors
+     */
+    public constructor(arr: Vector[]);
+    public constructor(arr: number[][]|Vector[]) {
+        // If the 1st element is a vector then it must be a Vector[]
+        if (Vector.isVector(arr[0])) {
+            let tempArr: number[][] = (arr as Vector[]).map(vect => vect.getArr());
+            // Should prob change this in the future
+            this.arr = new Matrix(tempArr).transposed().getArr();
+            this.dimensions = [tempArr[0].length, tempArr.length];
+        } else {
+            let numArr: number[][] = (arr as number[][]);
+            this.arr = numArr;
+            this.dimensions = [numArr.length, numArr[0].length];
+        }
     }
 
     //#region Getters
@@ -78,14 +92,9 @@ export default class Matrix {
         if (this.getDim(0) === 1) return this._(0, 0);
 
         let total: number = 0;
+        // i is the column
         for (let i = 0; i < this.getDim(1); i++) {
-            let newMatArr: number[][] = this.arr.slice(1).map(row => {
-                let newRow = row.slice();
-                newRow.splice(i, 1);
-                return newRow;
-            });
-
-            let newMat: Matrix = new Matrix(newMatArr);
+            let newMat: Matrix = this.getMinorMatrix(0, i);
 
             total += Math.pow(-1, i) * this._(0, i) * newMat.getDet();
         }
@@ -203,6 +212,60 @@ export default class Matrix {
         return total;
     }
 
+    /**
+     * Returns the inverse of a non-0 matrix
+     */
+    public invert(diagonalize: boolean): Matrix {
+        if (this.getDet() === 0) throw Error('Can\'t invert matrix. det = 0');
+
+        if (diagonalize && this.isSquareMatrix()) {
+            // PInv is the inverse of P
+            const [P, D, PInv] = this.diagonalize();
+
+            let diagonalArr: number[][] = D.getArr();
+            for (let i = 0; i < D.getDim(0); i++) {
+                diagonalArr[i][i] = Math.pow(D._(i, i), -1);
+            }
+
+            return P.multiply(new Matrix(diagonalArr)).multiply(PInv);
+        } else {
+            let innerArr: number[][] = [];
+            for (let i = 0; i < this.getDim(0); i++) {
+                let row: number[] = [];
+                for (let j = 0; j < this.getDim(1); j++) {
+                    let minorMatrix: Matrix = this.getMinorMatrix(i, j);
+                    row.push(Math.pow(-1, i + j) * minorMatrix.getDet());
+                }
+                innerArr.push(row);
+            }
+
+            return new Matrix(innerArr).multiply(1 / this.getDet()).transposed();
+        }
+    }
+
+    /**
+     * Outputs a matrix in diagonal form
+     */
+    public diagonalize(): Matrix[] {
+        let eigen: QR_Result[] = QR(this);
+
+        let eigenvalues: number[] = [];
+        let eigenvectors: Vector[] = [];
+        for (let pair of eigen) {
+            eigenvalues.push(pair.eigenvalue);
+            eigenvectors.push(pair.eigenvector);
+        }
+
+        let diag: number[][] = new ZeroMatrix(this.getDim(0)).getArr();
+        for (let i = 0; i < this.getDim(0); i++) {
+            diag[i][i] = eigenvalues[i];
+        }
+
+        let p: Matrix = new Matrix(eigenvectors);
+
+        return [p, new Matrix(diag), p.invert(false)];
+    }
+
     //#region Row operations
     /**
      * Returns an array with the indexed diagonal
@@ -240,6 +303,13 @@ export default class Matrix {
      */
     public isSymmetric(): boolean {
         return this.equals(this.transposed());
+    }
+
+    /**
+     * Tests if a matrix is square
+     */
+    public isSquareMatrix(): boolean {
+        return this.getDim(0) === this.getDim(1);
     }
 
     /**
@@ -310,5 +380,21 @@ export default class Matrix {
 
         let decFactor: number = Math.pow(10, n);
         return this.arr.map(row => row.map(val => Math.round(val * decFactor) / decFactor));
+    }
+
+    /**
+     * Gets the matrix when the row i and column j is removed
+     * @param i The row to remove
+     * @param j The column to remove
+     */
+    private getMinorMatrix(i: number, j: number): Matrix {
+        let temp: number[][] = this.getArr();
+        temp.splice(i, 1);
+
+        return new Matrix(temp.map(row => {
+            let newRow = row.slice();
+            newRow.splice(j, 1);
+            return newRow;
+        }));
     }
 }

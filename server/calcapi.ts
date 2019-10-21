@@ -1,7 +1,7 @@
 import express from 'express';
 import execCalc from './calculator/execCalc';
 import exprMap from './calculator/exprMap';
-import { Matrix, Vector, RandomMatrix, gaussianElimination } from './calculator/models';
+import { gaussianElimination, Matrix, RandomMatrix, Vector } from './calculator/models';
 import shuntingYard from './calculator/shuntingYard';
 import questions from './questions';
 import { IQuestionOptions, TCalc, TQuestion } from './types';
@@ -15,11 +15,11 @@ const router = express.Router();
 router.use(express.json());
 
 router.get('/', (req, res) => {
-    const NUMBER_REGEX: RegExp = /(-1|[\d\.]+)/;
-    const EXPR_REGEX: RegExp = /[a-z*+\-/\^]+/i;
+    const NUMBER_REGEX: RegExp = /(-1)|[\d\.]+/;
+    const EXPR_REGEX: RegExp = /[a-z*+/\^]+/i;
     const MATRIX_REGEX: RegExp = /\[(\[(-?[\d\.]+,?)+\],?)+\]/;
     // same as matrix but with only 1 inner array
-    const VECTOR_REGEX: RegExp = /\[(\[-?\d+,?\],?)+\]/;
+    const VECTOR_REGEX: RegExp = /\[(\[-?[\d\.]+,?\],?)+\]/;
     const BRACKET_REGEX: RegExp = /[\(\)]/;
 
     let { query: {calc: body} } = req;
@@ -27,8 +27,11 @@ router.get('/', (req, res) => {
     if (!body && typeof(body) !== 'string') return res.status(400);
 
     let partsArr: string[] | null = body
-        .replace(new RegExp('(?<!])-(\\(?' + joinRegex(/(-1|\+?[\d\.]+)/, MATRIX_REGEX).source + ')(?![\\w\\s]*[\\]])', 'g'), '+(-1*$1)')
-        .replace(/(^\+)|(?<=\(|\^)\+|\s/g, '')
+        .replace(/\s/g, '')
+        // -n = -1 * n
+        .replace(/-(?![^\[]*\])/g, '+-1*')
+        // Remove a plus if it is at the start of a statement
+        .replace(/(?<=^|\()\+/g, '')
         .replace(/([\d\]\)])([\(\[])/g, '$1*$2')
         .match(joinRegex(
             NUMBER_REGEX,
@@ -37,10 +40,13 @@ router.get('/', (req, res) => {
             BRACKET_REGEX
         ));
 
+    console.log(partsArr);
+
     if (!partsArr) return res.sendStatus(400);
 
     try {
         let calc: TCalc[] = partsArr.map(item => {
+            // Vector must come first as matrix will also match vectors
             if (item.match(VECTOR_REGEX)) {
                 return {
                     type: 'vector',

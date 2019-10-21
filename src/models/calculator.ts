@@ -173,13 +173,19 @@ export default class Calculator implements ICalcModel {
     /**
      * When not in a matrix 1, 3, and 4 do nothing
      * @param dir 0 = Left; 1 = Up; 2 = Right; 3 = Down; 4 = Return; 5 = Home; 6 = End
+     * @param clear Clear the results. Defaults to true
      */
-    public nav(dir: Nav): void {
+    public nav(dir: Nav, clear?: boolean): void {
+        if (clear === undefined) clear = true;
+
+        if (this.clearNext && clear) this.resetCalc();
+
         if (this.inMatrix()) {
             this.matrixNav(dir);
         } else {
             // The blank functions are for values of dir that do nothing
             // when not in a matrix
+            // tslint:disable: no-empty
             [
                 () => this.navLeft(),
                 () => {},
@@ -189,20 +195,26 @@ export default class Calculator implements ICalcModel {
                 () => this.navHome(),
                 () => this.navEnd()
             ][dir]();
+            // tslint:enable: no-empty
         }
     }
 
     /**
-     * Delete the last item
+     * Delete the last item.
+     * For matrix backspaces right should **always** be false
+     * @param right Deletes item to the right of the cursor as opposed to the left
      */
-    public backspace(): void {
+    public backspace(right: boolean): void {
         switch (this.inMatrix()) {
             case true:
                 let exited: boolean = this.matrixBackspace();
                 if (!exited) break;
             default:
                 if (this.clearNext) this.resetCalc();
-                else if (this.cursor > 0) {
+
+                if (right) {
+                    this.calculation.splice(this.cursor, 1);
+                } else if (this.cursor > 0) {
                     let wasInMatrix: boolean = this._inMatrix;
                     this.calculation.splice(this.cursor - 1, 1);
                     this.navLeft();
@@ -221,6 +233,9 @@ export default class Calculator implements ICalcModel {
     public submit(): void {
         let {calculation} = this;
         let joinedCalc: string = '';
+
+        this.clearNext = true;
+
         try {
             joinedCalc = Calculator.fixBrackets(calculation.map(item => item.toString()).join(''));
         } catch (ex) {
@@ -229,6 +244,7 @@ export default class Calculator implements ICalcModel {
             this.update();
             return;
         }
+
         fetch(`/api?calc=${encodeURIComponent(joinedCalc)}`)
         .then(res => {
             if (res.status !== 200) throw res;
@@ -250,7 +266,6 @@ export default class Calculator implements ICalcModel {
 
             this.error = '';
 
-            this.clearNext = true;
             this.update();
         })
         .catch(err => {
@@ -355,10 +370,7 @@ export default class Calculator implements ICalcModel {
      */
     private resetCalc(): void {
         this.clearNext = false;
-
-        this.calculation = [];
         this.results = [];
-        this._inMatrix = false;
-        this.cursor = 0;
+        this.error = '';
     }
 }

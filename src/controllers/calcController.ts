@@ -22,45 +22,47 @@ export default class CalcController implements IController {
      * @param key The key char
      * @param keyCode The key code
      */
-    public parseChar(key: string, keyCode: number): void {
+    public parseChar(e: KeyboardEvent): void {
         const { model } = this;
+        const { key } = e;
 
         // model could be undefined
         if (!model) return;
+        if (e.ctrlKey) return;
 
         if (model.inMatrix()) {
             if (key.match(/^[\-\d\.]$/)) {
                 model.addToMatrix(key);
             } else {
-                switch (keyCode) {
-                    case 8: // Backspace
-                        model.backspace();
+                switch (key) {
+                    case 'Backspace': // Backspace
+                        model.backspace(false);
                         break;
-                    case 13: // Return
+                    case 'Enter': // Return
                         model.nav(Nav.RETURN);
                         break;
-                    case 37: // Left Arrow
+                    case 'ArrowLeft': // Left Arrow
                         if (!model.shouldExitMatrix(false)) {
                             model.nav(Nav.LEFT);
                             break;
                         }
                         // Don't break if it should exit matrix to left
                     // I know its not number order
-                    case 219: // Left Square Bracket
+                    case '[': // Left Square Bracket
                         // endMatrix(forwards: boolean) -> false == don't move the cursor forwards
                         model.endMatrix(false);
                         break;
-                    case 38: // Up Arrow
+                    case 'ArrowUp': // Up Arrow
                         model.nav(Nav.UP);
                         break;
-                    case 32: // Space bar
-                    case 39: // Right Arrow
+                    case ' ': // Space bar
+                    case 'ArrowRight': // Right Arrow
                         model.nav(Nav.RIGHT);
                         break;
-                    case 40: // Down Arrow
+                    case 'ArrowDown': // Down Arrow
                         model.nav(Nav.DOWN);
                         break;
-                    case 221: // Right Square Bracket
+                    case ']': // Right Square Bracket
                         model.endMatrix();
                         break;
                 }
@@ -71,26 +73,29 @@ export default class CalcController implements IController {
             } else if (key.match(/^[a-z+*/\^\-()]$/)) {
                 model.addToCalc(key);
             } else {
-                switch (keyCode) {
-                    case 8: // Backspace
-                        model.backspace();
+                switch (key) {
+                    case 'Backspace': // Backspace
+                        model.backspace(false);
                         break;
-                    case 13: // Return
+                    case 'Enter': // Return
                         model.submit();
                         break;
-                    case 35: // End
+                    case 'End': // End
                         model.nav(Nav.END);
                         break;
-                    case 36: // Home
+                    case 'Home': // Home
                         model.nav(Nav.HOME);
                         break;
-                    case 37: // Left Arrow
+                    case 'ArrowLeft': // Left Arrow
                         model.nav(Nav.LEFT);
                         break;
-                    case 39: // Right Arrow
+                    case 'ArrowRight': // Right Arrow
                         model.nav(Nav.RIGHT);
                         break;
-                    case 219: // Left Square Bracket
+                    case 'Delete': // Delete
+                        model.backspace(true);
+                        break;
+                    case '[': // Left Square Bracket
                         model.newMatrix();
                         break;
                 }

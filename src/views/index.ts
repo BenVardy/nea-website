@@ -50,7 +50,7 @@ export default class Index implements IObserver {
 
         this.calcRoot.addEventListener('focusout', () => {
             this.showCursor = false;
-            this.model.nav(6);
+            this.model.nav(6, false);
             this.update(this.model);
         });
 
@@ -81,9 +81,7 @@ export default class Index implements IObserver {
      * @param e The event passed from the "keydown" event
      */
     private inputChar(e: KeyboardEvent): void {
-        let {key, keyCode} = e;
-
-        this.controller.parseChar(key, keyCode);
+        this.controller.parseChar(e);
     }
 
     /**
@@ -113,7 +111,7 @@ export default class Index implements IObserver {
         else katex.render(resultLatex, resultELem);
 
         let errorElem: HTMLElement = document.createElement('div');
-        errorElem.innerText = model.error;
+        errorElem.innerHTML = model.error;
 
         this.calcRoot.appendChild(calculation);
         this.calcRoot.appendChild(resultELem);
