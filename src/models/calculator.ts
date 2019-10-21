@@ -185,6 +185,7 @@ export default class Calculator implements ICalcModel {
         } else {
             // The blank functions are for values of dir that do nothing
             // when not in a matrix
+            // tslint:disable: no-empty
             [
                 () => this.navLeft(),
                 () => {},
@@ -194,6 +195,7 @@ export default class Calculator implements ICalcModel {
                 () => this.navHome(),
                 () => this.navEnd()
             ][dir]();
+            // tslint:enable: no-empty
         }
     }
 

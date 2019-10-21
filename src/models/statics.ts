@@ -7,7 +7,8 @@ export const commands = {
     'Enter (In Matrix)': 'Return',
     'Enter': 'Execute',
     'eigen(M)': 'Finds the eigenvalues and eigenvectors of M',
-    'det(M)': 'Returns the determinate of M'
+    'det(M)': 'Returns the determinate of M',
+    'diagonalize(M)': 'Diagonalizes M'
 } as {
     [key: string]: string
 };
