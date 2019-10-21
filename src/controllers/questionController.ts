@@ -1,5 +1,4 @@
-import InputMatrix from '../models/inputMatrix';
-import { IQuestionController, IQuestionModel, Nav } from '../types';
+import { IQuestionController, IQuestionModel } from '../types';
 import CalcController from './calcController';
 
 export default class QuestionController extends CalcController implements IQuestionController {
