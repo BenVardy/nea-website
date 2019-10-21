@@ -85,8 +85,8 @@ export default class QuestionsModel implements IQuestionModel {
     }
 
     // Safe to just pass off to area
-    public nav(dir: Nav): void {
-        this.getFocusedArea().nav(dir);
+    public nav(dir: Nav, clear?: boolean): void {
+        this.getFocusedArea().nav(dir, clear);
     }
 
     public shouldExitMatrix(del: boolean): boolean {

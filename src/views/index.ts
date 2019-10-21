@@ -50,7 +50,7 @@ export default class Index implements IObserver {
 
         this.calcRoot.addEventListener('focusout', () => {
             this.showCursor = false;
-            this.model.nav(6);
+            this.model.nav(6, false);
             this.update(this.model);
         });
 
@@ -113,7 +113,7 @@ export default class Index implements IObserver {
         else katex.render(resultLatex, resultELem);
 
         let errorElem: HTMLElement = document.createElement('div');
-        errorElem.innerText = model.error;
+        errorElem.innerHTML = model.error;
 
         this.calcRoot.appendChild(calculation);
         this.calcRoot.appendChild(resultELem);
