@@ -16,7 +16,7 @@ router.use(express.json());
 
 router.get('/', (req, res) => {
     const NUMBER_REGEX: RegExp = /(-1)|[\d\.]+/;
-    const EXPR_REGEX: RegExp = /[a-z*+\-/\^]+/i;
+    const EXPR_REGEX: RegExp = /[a-z*+/\^]+/i;
     const MATRIX_REGEX: RegExp = /\[(\[(-?[\d\.]+,?)+\],?)+\]/;
     // same as matrix but with only 1 inner array
     const VECTOR_REGEX: RegExp = /\[(\[-?[\d\.]+,?\],?)+\]/;

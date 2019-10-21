@@ -5,7 +5,7 @@ export default class Exponent implements IExpr {
     public symbol: string = '^';
     public final: boolean = false;
     public noParams: number = 2;
-    public precedence: number = 2;
+    public precedence: number = 1;
 
     public execute(...params: TExprParam[]): TExprParam[] {
         if (params.length !== 2) throw new Error('Must have 2 params');
