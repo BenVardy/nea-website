@@ -93,8 +93,8 @@ export default class QuestionsModel implements IQuestionModel {
         return this.getFocusedArea().shouldExitMatrix(del);
     }
 
-    public backspace(): void {
-        this.getFocusedArea().backspace();
+    public backspace(right: boolean): void {
+        this.getFocusedArea().backspace(right);
         this.update();
     }
 

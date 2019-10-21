@@ -198,16 +198,21 @@ export default class Calculator implements ICalcModel {
     }
 
     /**
-     * Delete the last item
+     * Delete the last item.
+     * For matrix backspaces right should **always** be false
+     * @param right Deletes item to the right of the cursor as opposed to the left
      */
-    public backspace(): void {
+    public backspace(right: boolean): void {
         switch (this.inMatrix()) {
             case true:
                 let exited: boolean = this.matrixBackspace();
                 if (!exited) break;
             default:
                 if (this.clearNext) this.resetCalc();
-                if (this.cursor > 0) {
+
+                if (right) {
+                    this.calculation.splice(this.cursor, 1);
+                } else if (this.cursor > 0) {
                     let wasInMatrix: boolean = this._inMatrix;
                     this.calculation.splice(this.cursor - 1, 1);
                     this.navLeft();

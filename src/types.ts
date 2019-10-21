@@ -43,7 +43,7 @@ export interface IInputModel extends IObservable {
      * @param clear clears the array. Defaults to true
      */
     nav(dir: Nav, clear?: boolean): void;
-    backspace(): void;
+    backspace(right: boolean): void;
 
     submit(): void;
 

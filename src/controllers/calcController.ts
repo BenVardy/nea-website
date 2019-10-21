@@ -34,7 +34,7 @@ export default class CalcController implements IController {
             } else {
                 switch (keyCode) {
                     case 8: // Backspace
-                        model.backspace();
+                        model.backspace(false);
                         break;
                     case 13: // Return
                         model.nav(Nav.RETURN);
@@ -73,7 +73,7 @@ export default class CalcController implements IController {
             } else {
                 switch (keyCode) {
                     case 8: // Backspace
-                        model.backspace();
+                        model.backspace(false);
                         break;
                     case 13: // Return
                         model.submit();
@@ -89,6 +89,9 @@ export default class CalcController implements IController {
                         break;
                     case 39: // Right Arrow
                         model.nav(Nav.RIGHT);
+                        break;
+                    case 46: // Delete
+                        model.backspace(true);
                         break;
                     case 219: // Left Square Bracket
                         model.newMatrix();
