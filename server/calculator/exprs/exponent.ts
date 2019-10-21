@@ -26,7 +26,7 @@ export default class Exponent implements IExpr {
             let finalMatrix: Matrix;
 
             if (exponent === -1) {
-                finalMatrix = matrix.invert();
+                finalMatrix = matrix.invert(true);
             } else if (exponent > 0) {
                 finalMatrix = matrix.clone();
                 for (let i = 0; i < (param2.data as number); i++) {

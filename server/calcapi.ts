@@ -1,7 +1,7 @@
 import express from 'express';
 import execCalc from './calculator/execCalc';
 import exprMap from './calculator/exprMap';
-import { Matrix, Vector, RandomMatrix, gaussianElimination } from './calculator/models';
+import { gaussianElimination, Matrix, RandomMatrix, Vector } from './calculator/models';
 import shuntingYard from './calculator/shuntingYard';
 import questions from './questions';
 import { IQuestionOptions, TCalc, TQuestion } from './types';

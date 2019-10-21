@@ -212,22 +212,40 @@ export default class Matrix {
         return total;
     }
 
-    public invert(): Matrix {
+    /**
+     * Returns the inverse of a non-0 matrix
+     */
+    public invert(diagonalize: boolean): Matrix {
         if (this.getDet() === 0) throw Error('Can\'t invert matrix. det = 0');
 
-        let innerArr: number[][] = [];
-        for (let i = 0; i < this.getDim(0); i++) {
-            let row: number[] = [];
-            for (let j = 0; j < this.getDim(1); j++) {
-                let minorMatrix: Matrix = this.getMinorMatrix(i, j);
-                row.push(Math.pow(-1, i + j) * minorMatrix.getDet());
-            }
-            innerArr.push(row);
-        }
+        if (diagonalize && this.isSquareMatrix()) {
+            // PInv is the inverse of P
+            const [P, D, PInv] = this.diagonalize();
 
-        return new Matrix(innerArr).multiply(1 / this.getDet()).transposed();
+            let diagonalArr: number[][] = D.getArr();
+            for (let i = 0; i < D.getDim(0); i++) {
+                diagonalArr[i][i] = Math.pow(D._(i, i), -1);
+            }
+
+            return P.multiply(new Matrix(diagonalArr)).multiply(PInv);
+        } else {
+            let innerArr: number[][] = [];
+            for (let i = 0; i < this.getDim(0); i++) {
+                let row: number[] = [];
+                for (let j = 0; j < this.getDim(1); j++) {
+                    let minorMatrix: Matrix = this.getMinorMatrix(i, j);
+                    row.push(Math.pow(-1, i + j) * minorMatrix.getDet());
+                }
+                innerArr.push(row);
+            }
+
+            return new Matrix(innerArr).multiply(1 / this.getDet()).transposed();
+        }
     }
 
+    /**
+     * Outputs a matrix in diagonal form
+     */
     public diagonalize(): Matrix[] {
         let eigen: QR_Result[] = QR(this);
 
@@ -245,7 +263,7 @@ export default class Matrix {
 
         let p: Matrix = new Matrix(eigenvectors);
 
-        return [p, new Matrix(diag)];
+        return [p, new Matrix(diag), p.invert(false)];
     }
 
     //#region Row operations
@@ -285,6 +303,13 @@ export default class Matrix {
      */
     public isSymmetric(): boolean {
         return this.equals(this.transposed());
+    }
+
+    /**
+     * Tests if a matrix is square
+     */
+    public isSquareMatrix(): boolean {
+        return this.getDim(0) === this.getDim(1);
     }
 
     /**
