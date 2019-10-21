@@ -62,6 +62,7 @@ export default class QuestionsModel implements IQuestionModel {
 
     public addToCalc(...s: TSymbol[]): void {
         for (let symbol of s) {
+            // Don't allow multiple entries
             if (InputMatrix.isInputMatrix(symbol) || symbol.match(/[\d\.]/)) {
                 this.getFocusedArea().addToCalc(symbol);
             }
@@ -70,6 +71,7 @@ export default class QuestionsModel implements IQuestionModel {
     }
 
     public newMatrix(): void {
+        if (this.getFocusedArea().calculation.length > 0) return;
         this.getFocusedArea().newMatrix();
         this.update();
     }
@@ -87,6 +89,7 @@ export default class QuestionsModel implements IQuestionModel {
     // Safe to just pass off to area
     public nav(dir: Nav, clear?: boolean): void {
         this.getFocusedArea().nav(dir, clear);
+        this.update();
     }
 
     public shouldExitMatrix(del: boolean): boolean {

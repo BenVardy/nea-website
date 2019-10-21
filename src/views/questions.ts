@@ -111,7 +111,7 @@ export default class Questions implements IObserver {
     }
 
     private inputChar(e: KeyboardEvent): void {
-        this.controller.parseChar(e.key, e.keyCode);
+        this.controller.parseChar(e);
     }
 
     private handleNewQuestion(type: string): void {

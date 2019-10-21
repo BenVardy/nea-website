@@ -79,7 +79,7 @@ export interface IQuestionModel extends IInputModel {
 
 export interface IController {
     setModel(model: IInputModel): void;
-    parseChar(key: string, keyCode: number): void;
+    parseChar(e: KeyboardEvent): void;
 }
 
 export interface IQuestionController extends IController {

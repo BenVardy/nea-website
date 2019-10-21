@@ -81,9 +81,7 @@ export default class Index implements IObserver {
      * @param e The event passed from the "keydown" event
      */
     private inputChar(e: KeyboardEvent): void {
-        let {key, keyCode} = e;
-
-        this.controller.parseChar(key, keyCode);
+        this.controller.parseChar(e);
     }
 
     /**
