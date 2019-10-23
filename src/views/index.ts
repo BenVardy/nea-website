@@ -112,6 +112,7 @@ export default class Index implements IObserver {
 
         let errorElem: HTMLElement = document.createElement('div');
         errorElem.innerHTML = model.error;
+        errorElem.className = 'error-message';
 
         this.calcRoot.appendChild(calculation);
         this.calcRoot.appendChild(resultELem);

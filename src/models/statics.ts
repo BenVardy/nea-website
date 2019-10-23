@@ -8,7 +8,8 @@ export const commands = {
     'Enter': 'Execute',
     'eigen(M)': 'Finds the eigenvalues and eigenvectors of M',
     'det(M)': 'Returns the determinate of M',
-    'diagonalize(M)': 'Diagonalizes M'
+    'diagonalize(M)': 'Diagonalizes M',
+    'transpose(M)': 'Returns the transpose of M'
 } as {
     [key: string]: string
 };

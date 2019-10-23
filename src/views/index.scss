@@ -13,6 +13,11 @@
     padding: $unit / 2;
 }
 
+.error-message {
+    color: red;
+    margin-left: $unit / 2;
+}
+
 .usage {
     margin: 0 auto;
     width: -webpack-calc(50% + 2px);
