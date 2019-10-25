@@ -223,6 +223,19 @@ export default class Matrix {
     }
 
     /**
+     * Gets the trace of a matrix
+     */
+    public trace(): number {
+        let total: number = 0;
+
+        for (let i = 0; i < this.getDim(0); i++) {
+            total += this._(i, i);
+        }
+
+        return total;
+    }
+
+    /**
      * Returns the product of the values in the main diagonal
      */
     public diagProduct(): number {

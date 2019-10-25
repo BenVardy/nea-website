@@ -1,4 +1,5 @@
 export { default as GetDet } from './getDet';
+export { default as Trace } from './trace';
 export { default as Eigen } from './eigen';
 export { default as Diagonalize } from './diagonalize';
 export { default as Transpose } from './transpose';
