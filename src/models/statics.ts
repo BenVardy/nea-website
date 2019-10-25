@@ -9,7 +9,8 @@ export const commands = {
     'eigen(M)': 'Finds the eigenvalues and eigenvectors of M',
     'det(M)': 'Returns the determinate of M',
     'diagonalize(M)': 'Diagonalizes M',
-    'transpose(M)': 'Returns the transpose of M'
+    'transpose(M)': 'Returns the transpose of M',
+    'tr(M)': 'Returns the trace of M'
 } as {
     [key: string]: string
 };

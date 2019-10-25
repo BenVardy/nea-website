@@ -269,12 +269,17 @@ export default class Calculator implements ICalcModel {
             this.update();
         })
         .catch(err => {
-            err.json()
-            .then((json: IAPIError) => {
-                // console.error(json.message);
-                this.error = json.message;
+            if (!err.json) {
+                this.error = 'Unknown Error in calculation 🤷';
                 this.update();
-            });
+            } else {
+                err.json()
+                .then((json: IAPIError) => {
+                    // console.error(json.message);
+                    this.error = json.message;
+                    this.update();
+                });
+            }
         });
     }
 

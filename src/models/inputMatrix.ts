@@ -72,7 +72,7 @@ export default class InputMatrix {
         let temp: string[][] = this.getArr();
         if (cursor) temp[this.i][this.j] += '|';
 
-        let replaceBlanks: (item: string) => string = item => item.replace(/^$/, '\\cdot');
+        let replaceBlanks: (item: string) => string = item => item.replace(/^$/, '0');
 
         return `
             \\begin{bmatrix}
