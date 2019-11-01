@@ -14,6 +14,13 @@ export default class QuestionsModel implements IQuestionModel {
     public answers: string[];
     public focusedArea: number;
 
+    public options = {
+        noRows: 3,
+        noCols: 3,
+        maxNo: 10,
+        ints: true
+    };
+
     private observers: IObserver[];
 
     public constructor() {
@@ -53,6 +60,20 @@ export default class QuestionsModel implements IQuestionModel {
         for (let o of this.observers) {
             o.update(this);
         }
+    }
+
+    /**
+     * Sets the value of an option for the questions
+     *
+     * @param name The name of the option to set
+     * @param value The value to set it to
+     */
+    public setOption(name: string, value: any) {
+        if (Object.keys(this.options).includes(name)) {
+            // this.options[name] = value;
+        }
+
+        this.update();
     }
 
     //#region IInputModel
@@ -117,8 +138,14 @@ export default class QuestionsModel implements IQuestionModel {
         this.update();
     }
 
-    public async getQuestion(type: string, options: {[key: string]: string}): Promise<void> {
-        await fetch(`/api/question/${type}/?${this.encodeOptions(options)}`)
+    /**
+     * Gets a new question
+     *
+     * @param type The type-string of the question
+     * @param options The options for the question
+     */
+    public async getQuestion(type: string): Promise<void> {
+        await fetch(`/api/question/${type}?${this.encodeOptions(this.options)}`)
         .then(res => res.json())
         .then((json: IAPIQuestionResult) => {
             this.question = json.question.replace(/\$\$(.*)\$\$/g, (match): string => {
@@ -141,6 +168,9 @@ export default class QuestionsModel implements IQuestionModel {
         this.update();
     }
 
+    /**
+     * Checks the answers given
+     */
     public submit(): void {
         // Indices of questions answered correctly
         let corrAnsI: number[] = [];
@@ -160,11 +190,18 @@ export default class QuestionsModel implements IQuestionModel {
         this.update();
     }
 
-    public getFocusedArea(): IInputModel {
+    /**
+     * Gets the current area focused
+     */
+    private getFocusedArea(): IInputModel {
         return this.answerAreas[this.focusedArea].calcArea;
     }
 
-    private encodeOptions(options: {[key: string]: string}): string {
+    /**
+     * Converts an object to a url string
+     * @param options The options object to encode
+     */
+    private encodeOptions(options: {[key: string]: any}): string {
         return Object.keys(options).reduce((acc: string[], key) => (
             acc.concat(`${key}=${encodeURIComponent(options[key])}`
         )), []).join('&');

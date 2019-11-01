@@ -6,19 +6,21 @@ export default class Eigen implements IQuestion {
     public answers: IAnswer[];
 
     constructor(options: IQuestionOptions) {
-        const noRows: number = options.noRows || 2;
-        const noCols: number = options.noCols || 2;
-        const maxNo: number = options.maxNo || 10;
-        const ints: boolean = options.ints || true;
-        const eigenvalues: boolean = options.eigenvalues || true;
-        const eigenvectors: boolean = options.eigenvectors || true;
+        const noRows: string = options.noRows || '2';
+        const noCols: string = options.noCols || '2';
+        const maxNo: string = options.maxNo || '10';
+        const ints: string = options.ints || 'true';
+        const eigenvalues: string = options.eigenvalues || 'true';
+        const eigenvectors: string = options.eigenvectors || 'true';
 
         let matrix: Matrix;
         let results: QR_Result[];
 
         while (true) {
             // We need a non-0 matrix to get its eigenthings
-            matrix = new RandomMatrix(noRows, noCols, maxNo, ints ? 0 : 2);
+            matrix = new RandomMatrix(
+                parseInt(noRows, 10), parseInt(noCols, 10), parseInt(maxNo, 10), ints === 'true' ? 0 : 1
+            );
 
             try {
                 results = QR(matrix);

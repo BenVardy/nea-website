@@ -16,7 +16,7 @@ export default class QuestionController extends CalcController implements IQuest
         if (this.model) this.model.changeFocus(newFocus);
     }
 
-    public getQuestion(type: string, options: {[key: string]: string}) {
-        if (this.model) this.model.getQuestion(type, options);
+    public getQuestion(type: string) {
+        if (this.model) this.model.getQuestion(type);
     }
 }

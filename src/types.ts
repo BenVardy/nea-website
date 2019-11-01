@@ -72,9 +72,18 @@ export interface IQuestionModel extends IInputModel {
     answers: string[];
     focusedArea: number;
 
+    // Similar to IQuestionOptions on the server-side
+    options: {
+        noRows: number;
+        noCols: number;
+        maxNo: number;
+        ints: boolean;
+    };
+
+    setOption(name: string, value: any): void;
+
     changeFocus(newFocus: number): void;
-    getQuestion(type: string, options: {[key: string]: string}): Promise<void>;
-    getFocusedArea(): IInputModel;
+    getQuestion(type: string): Promise<void>;
 }
 
 export interface IController {
