@@ -10,6 +10,10 @@ const router = express.Router();
 
 router.use(express.json());
 
+/**
+ * Completes a calculation.
+ * Calculations should be sent in a json-like format for matrices and vectors
+ */
 router.get('/', (req, res) => {
 
     let { query: {calc: body} } = req;
@@ -33,6 +37,9 @@ router.get('/', (req, res) => {
     }
 });
 
+/**
+ * Gets a question
+ */
 router.get('/question/:type', (req, res) => {
     let { query: qTemp, params: {type} } = req;
 
@@ -48,6 +55,9 @@ router.get('/question/:type', (req, res) => {
     }
 });
 
+/**
+ * Gets a matrix for the 404 page
+ */
 router.get('/404', (req, res) => {
     let matrix: Matrix;
     let four0four = new Vector([4, 0, 4]);

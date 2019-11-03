@@ -3,10 +3,20 @@ import { TCalc } from './types';
 
 import { Matrix, Vector } from './calculator/models/';
 
+/**
+ * Joins multiple regular expressions into one with or-s
+ *
+ * @param regex The regex to join
+ */
 function joinRegex(...regex: RegExp[]): RegExp {
     return new RegExp(regex.map(item => item.source).join('|'), 'gi');
 }
 
+/**
+ * Parses a calculation
+ *
+ * @param input The un-parsed input
+ */
 export default function parseInput(input: string): TCalc[] {
     const NUMBER_REGEX: RegExp = /(-1)|[\d\.]+(e-?\d+)?/;
     const EXPR_REGEX: RegExp = /[a-z*+/\^]+/i;

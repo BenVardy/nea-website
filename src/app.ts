@@ -20,6 +20,7 @@ let pageRoot = document.createElement('div');
 pageRoot.className = 'page';
 root.appendChild(pageRoot);
 
+// The main rooter for the website
 function onUrlChange(location: Location): void {
     pageRoot.innerHTML = '';
     switch (location.pathname) {

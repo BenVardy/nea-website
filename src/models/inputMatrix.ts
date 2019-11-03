@@ -1,3 +1,6 @@
+/**
+ * The base for displaying matrices
+ */
 export default class InputMatrix {
 
     // Static Methods

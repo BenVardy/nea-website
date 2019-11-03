@@ -4,7 +4,12 @@ import {IAnswerArea, IAPIQuestionResult, IInputModel, IObserver, IQuestionModel,
 import Calculator from './calculator';
 import InputMatrix from './inputMatrix';
 
+/**
+ * The model behind the questions view
+ */
 export default class QuestionsModel implements IQuestionModel {
+
+    // Properties
     // These should be ignored here
     public calculation: TSymbol[];
     public cursor: number;
@@ -15,14 +20,18 @@ export default class QuestionsModel implements IQuestionModel {
     public focusedArea: number;
 
     public options = {
-        noRows: 3,
-        noCols: 3,
-        maxNo: 10,
-        ints: true
-    };
+        noRows: '3',
+        noCols: '3',
+        maxNo: '10',
+        ints: 'true'
+    } as {[key: string]: string};
 
     private observers: IObserver[];
 
+    // Methods
+    /**
+     * Sets up a new Question Model
+     */
     public constructor() {
         this.calculation = [];
         this.cursor = 0;
@@ -68,9 +77,9 @@ export default class QuestionsModel implements IQuestionModel {
      * @param name The name of the option to set
      * @param value The value to set it to
      */
-    public setOption(name: string, value: any) {
+    public setOption(name: string, value: string) {
         if (Object.keys(this.options).includes(name)) {
-            // this.options[name] = value;
+            this.options[name] = value;
         }
 
         this.update();
@@ -129,6 +138,7 @@ export default class QuestionsModel implements IQuestionModel {
 
     /**
      * Changes the focus answer box
+     *
      * @param newFocus The index of the new focus
      */
     public changeFocus(newFocus: number): void {

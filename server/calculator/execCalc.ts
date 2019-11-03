@@ -1,10 +1,6 @@
 import { IExpr, TCalc, TExprParam } from '../types';
 import { Stack } from './models';
 
-function isIExpr(obj: any): obj is IExpr {
-    return 'execute' in obj;
-}
-
 /**
  * Executes the calculation given
  * @param calc The calculation. Should be in RPN

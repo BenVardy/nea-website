@@ -10,7 +10,11 @@ import {buttons as importButtons} from '../models/statics';
 
 import './questions.scss';
 
+/**
+ * The questions page
+ */
 export default class Questions implements IObserver {
+    // Properties
     private root: HTMLElement;
     private questionElem: HTMLElement;
     private ansElemContainer: HTMLElement;
@@ -20,6 +24,12 @@ export default class Questions implements IObserver {
 
     private showCursor: boolean;
 
+    // Methods
+    /**
+     * Crates a new questions page
+     *
+     * @param root The root of the page
+     */
     public constructor(root: HTMLElement) {
         this.root = root;
 
@@ -62,6 +72,11 @@ export default class Questions implements IObserver {
         this.update(this.model);
     }
 
+    /**
+     * Updates the DOM with new data. Part of IObservable
+     *
+     * @param o The model observed
+     */
     public update(o: IObservable): void {
         const newModel = o as IQuestionModel;
         this.questionElem.innerHTML = newModel.question;
@@ -87,7 +102,7 @@ export default class Questions implements IObserver {
                 ansArea.calculation,
                 ansArea.inMatrix(),
                 ansArea.cursor,
-                this.showCursor && newModel.focusedArea === i
+                this.`show`Cursor && newModel.focusedArea === i
             );
             if (ansLatex === '') ansElem.innerHTML = '&nbsp;';
             else katex.render(ansLatex, ansElem);
@@ -98,6 +113,11 @@ export default class Questions implements IObserver {
         }));
     }
 
+    /**
+     * Sets up HTML versions of buttons for questions from templates
+     *
+     * @param buttons The buttons templates
+     */
     private getQuestionButtons(buttons: IQuestionButton[]): HTMLElement[] {
         return buttons.map(button => {
             let buttonElem = new Button();
@@ -110,15 +130,30 @@ export default class Questions implements IObserver {
         });
     }
 
+    /**
+     * Handles a keypress
+     *
+     * @param e The keyboard event
+     */
     private inputChar(e: KeyboardEvent): void {
         this.controller.parseChar(e);
     }
 
+    /**
+     * Handles a question button click
+     *
+     * @param type The type of question
+     */
     private handleNewQuestion(type: string): void {
-        this.controller.getQuestion(type, {});
+        this.controller.getQuestion(type);
         this.ansElemContainer.focus();
     }
 
+    /**
+     * Handles a change of focus area
+     *
+     * @param i The index of the new focus area
+     */
     private handleFocusChange(i: number): void {
         this.controller.changeFocus(i);
     }

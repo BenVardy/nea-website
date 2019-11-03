@@ -1,5 +1,8 @@
 import { IQuestionButton } from '../types';
 
+/**
+ * The commands to display in the usage table
+ */
 export const commands = {
     '[': 'Begin matrix',
     ']': 'End matrix',
@@ -15,6 +18,9 @@ export const commands = {
     [key: string]: string
 };
 
+/**
+ * Question buttons
+ */
 export const buttons: IQuestionButton[] = [
     {
         label: 'Matrix Multiplication',

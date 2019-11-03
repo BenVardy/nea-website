@@ -74,13 +74,10 @@ export interface IQuestionModel extends IInputModel {
 
     // Similar to IQuestionOptions on the server-side
     options: {
-        noRows: number;
-        noCols: number;
-        maxNo: number;
-        ints: boolean;
+        [key: string]: string
     };
 
-    setOption(name: string, value: any): void;
+    setOption(name: string, value: string): void;
 
     changeFocus(newFocus: number): void;
     getQuestion(type: string): Promise<void>;
@@ -93,7 +90,8 @@ export interface IController {
 
 export interface IQuestionController extends IController {
     changeFocus(newFocus: number): void;
-    getQuestion(type: string, options: {[key: string]: string}): void;
+    setOption(name: string, value: string): void;
+    getQuestion(type: string): void;
 }
 
 export interface IQuestionButton {

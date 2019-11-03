@@ -75,6 +75,9 @@ export default class Calculator implements ICalcModel {
         this._inMatrix = false;
     }
 
+    /**
+     * Tests if the cursor is in a matrix
+     */
     public inMatrix(): boolean {
         return this._inMatrix;
     }
@@ -348,11 +351,17 @@ export default class Calculator implements ICalcModel {
         this.update();
     }
 
+    /**
+     * Nav to the start of a calculation
+     */
     private navHome(): void {
         this.cursor = 0;
         this.update();
     }
 
+    /**
+     * Nav to the end of the calculation
+     */
     private navEnd(): void {
         this.cursor = this.calculation.length;
         this.update();
