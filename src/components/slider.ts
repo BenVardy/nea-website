@@ -1,42 +1,33 @@
+import ComponentBase from './ComponentBase';
+
 import './slider.scss';
 
-export default class Slider {
-
-    public className: string;
-    public id: string;
-    public onChange?: (value: string) => void;
-    public label: string;
-
+export default class Slider extends ComponentBase {
     public minValue: string;
     public maxValue: string;
     public defaultNumber: string;
 
-    private sliderContainer: HTMLElement;
+    public clickHandler: never;
+    public innerHTML: never;
 
-    public constructor(options: {[P in keyof Slider]?: Slider[P]}) {
-        this.className = options.className || '';
-        this.id = options.id || '';
-        this.label = options.label || '';
+    public constructor(options?: {[P in keyof Slider]?: Slider[P]}) {
+        super(options);
+        if (!options) options = {};
 
         this.minValue = options.minValue || '1';
         this.maxValue = options.maxValue || '4';
         this.defaultNumber = options.defaultNumber || '3';
 
-        this.onChange = options.onChange;
-
-        this.sliderContainer = document.createElement('div');
-        this.sliderContainer.classList.add('slider-container');
-        if (this.className !== '') this.sliderContainer.classList.add(this.className);
+        if (this.className) this.root.classList.add(this.className);
 
         let slider = document.createElement('input');
         slider.classList.add('slider');
-        if (this.id !== '') slider.id = this.id;
         slider.setAttribute('type', 'range');
         slider.setAttribute('min', this.minValue);
         slider.setAttribute('max', this.maxValue);
         slider.setAttribute('value', this.defaultNumber);
 
-        this.sliderContainer.appendChild(slider);
+        this.root.appendChild(slider);
 
         let value = document.createElement('div');
         value.innerHTML = `${this.label}: `;
@@ -46,15 +37,11 @@ export default class Slider {
         valueNumber.innerHTML = this.defaultNumber;
 
         value.insertAdjacentElement('beforeend', valueNumber);
-        this.sliderContainer.appendChild(value);
+        this.root.appendChild(value);
 
         slider.addEventListener('input', () => {
             valueNumber.innerHTML = slider.value;
-            if (this.onChange) this.onChange(slider.value);
+            if (this.changeHandler) this.changeHandler(slider.value);
         });
-    }
-
-    public render(): HTMLElement {
-        return this.sliderContainer;
     }
 }

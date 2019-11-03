@@ -4,7 +4,7 @@ import Button from '../components/button';
 import Slider from '../components/slider';
 import QuestionController from '../controllers/questionController';
 import QuestionsModel from '../models/questionModel';
-import { IInputModel, IObservable, IObserver, ILabelTypePair, IQuestionController, IQuestionModel } from '../types';
+import { IInputModel, ILabelTypePair, IObservable, IObserver, IQuestionController, IQuestionModel } from '../types';
 
 import Calculator from '../models/calculator';
 import {buttons as importButtons, sliders} from '../models/statics';
@@ -123,11 +123,12 @@ export default class Questions implements IObserver {
      */
     private getQuestionButtons(buttons: ILabelTypePair[]): HTMLElement[] {
         return buttons.map(button => {
-            let buttonElem = new Button();
-            buttonElem.text = button.label;
-            buttonElem.clickHandler = () => {
-                this.handleNewQuestion(button.type);
-            };
+            let buttonElem = new Button({
+                innerHTML: button.label,
+                clickHandler: () => {
+                    this.handleNewQuestion(button.type);
+                }
+            });
 
             return buttonElem.render();
         });
@@ -140,7 +141,7 @@ export default class Questions implements IObserver {
         for (let sliderValue of sliders) {
             slidersContainer.appendChild(new Slider({
                 label: sliderValue.label,
-                onChange: (value) => this.controller.setOption(sliderValue.type, value)
+                changeHandler: (value: string) => this.controller.setOption(sliderValue.type, value)
             }).render());
         }
 

@@ -14,7 +14,7 @@ const history = createBrowserHistory();
 let root = document.getElementById('root');
 if (!root) throw Error('No Root set in html');
 
-root.appendChild(TopBar(history));
+root.appendChild(new TopBar(history).render());
 
 let pageRoot = document.createElement('div');
 pageRoot.className = 'page';
