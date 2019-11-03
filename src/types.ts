@@ -94,7 +94,7 @@ export interface IQuestionController extends IController {
     getQuestion(type: string): void;
 }
 
-export interface IQuestionButton {
+export interface ILabelTypePair {
     label: string;
     type: string;
 }

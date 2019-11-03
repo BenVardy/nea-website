@@ -1,12 +1,13 @@
 import katex from 'katex';
 
 import Button from '../components/button';
+import Slider from '../components/slider';
 import QuestionController from '../controllers/questionController';
 import QuestionsModel from '../models/questionModel';
-import { IInputModel, IObservable, IObserver, IQuestionButton, IQuestionController, IQuestionModel } from '../types';
+import { IInputModel, IObservable, IObserver, ILabelTypePair, IQuestionController, IQuestionModel } from '../types';
 
 import Calculator from '../models/calculator';
-import {buttons as importButtons} from '../models/statics';
+import {buttons as importButtons, sliders} from '../models/statics';
 
 import './questions.scss';
 
@@ -65,6 +66,8 @@ export default class Questions implements IObserver {
         this.ansElemContainer.focus();
         this.root.appendChild(this.ansElemContainer);
 
+        this.root.appendChild(this.getSliders());
+
         this.handleFocusChange = this.handleFocusChange.bind(this);
 
         this.showCursor = true;
@@ -102,7 +105,7 @@ export default class Questions implements IObserver {
                 ansArea.calculation,
                 ansArea.inMatrix(),
                 ansArea.cursor,
-                this.`show`Cursor && newModel.focusedArea === i
+                this.showCursor && newModel.focusedArea === i
             );
             if (ansLatex === '') ansElem.innerHTML = '&nbsp;';
             else katex.render(ansLatex, ansElem);
@@ -118,7 +121,7 @@ export default class Questions implements IObserver {
      *
      * @param buttons The buttons templates
      */
-    private getQuestionButtons(buttons: IQuestionButton[]): HTMLElement[] {
+    private getQuestionButtons(buttons: ILabelTypePair[]): HTMLElement[] {
         return buttons.map(button => {
             let buttonElem = new Button();
             buttonElem.text = button.label;
@@ -128,6 +131,20 @@ export default class Questions implements IObserver {
 
             return buttonElem.render();
         });
+    }
+
+    private getSliders(): HTMLElement {
+        let slidersContainer = document.createElement('div');
+        slidersContainer.classList.add('sliders-container');
+
+        for (let sliderValue of sliders) {
+            slidersContainer.appendChild(new Slider({
+                label: sliderValue.label,
+                onChange: (value) => this.controller.setOption(sliderValue.type, value)
+            }).render());
+        }
+
+        return slidersContainer;
     }
 
     /**

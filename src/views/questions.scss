@@ -31,3 +31,7 @@
 .incorrect-ans {
     border-color: red;
 }
+
+.sliders-container > div {
+    width: $unit * 12;
+}

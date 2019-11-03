@@ -1,4 +1,4 @@
-import { IQuestionButton } from '../types';
+import { ILabelTypePair } from '../types';
 
 /**
  * The commands to display in the usage table
@@ -21,7 +21,7 @@ export const commands = {
 /**
  * Question buttons
  */
-export const buttons: IQuestionButton[] = [
+export const buttons: ILabelTypePair[] = [
     {
         label: 'Matrix Multiplication',
         type: 'matrixmult'
@@ -33,5 +33,16 @@ export const buttons: IQuestionButton[] = [
     {
         label: 'Eigenthings',
         type: 'eigen'
+    }
+];
+
+export const sliders: ILabelTypePair[] = [
+    {
+        label: 'Rows',
+        type: 'noRows'
+    },
+    {
+        label: 'Columns',
+        type: 'noCols'
     }
 ];
