@@ -11,15 +11,17 @@ export default class MatrixMult implements IQuestion {
         const maxNo: string = options.maxNo || '10';
         const ints: string = options.ints || 'true';
 
-        console.log([noRows, noCols, maxNo, ints]);
-
-        let matrices: Matrix[] = new Array(2).fill([]).map(() => new RandomMatrix(
-            parseInt(noRows, 10), parseInt(noCols, 10), parseInt(maxNo, 10), ints === 'true' ? 0 : 1)
+        let matrixA: Matrix = new RandomMatrix(
+            parseInt(noRows, 10), parseInt(noCols, 10), parseInt(maxNo, 10), ints === 'true' ? 0 : 1
         );
 
-        let result: Matrix = matrices[0].multiply(matrices[1]);
+        let matrixB: Matrix = new RandomMatrix(
+            parseInt(noCols, 10), parseInt(noRows, 10), parseInt(maxNo, 10), ints === 'true' ? 0 : 1
+        );
 
-        this.question = `$$${matrices.map(matrix => matrix.toLatex()).join(' ')}=$$`;
+        let result: Matrix = matrixA.multiply(matrixB);
+
+        this.question = `$$${matrixA.toLatex()} ${matrixB.toLatex()}=$$`;
         this.answers = [ {
             label: '',
             value: result.toString()

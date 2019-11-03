@@ -7,7 +7,8 @@ export default class Eigen implements IQuestion {
 
     constructor(options: IQuestionOptions) {
         const noRows: string = options.noRows || '2';
-        const noCols: string = options.noCols || '2';
+        // Columns should be the same as rows to ensure square matrices
+        const noCols: string = noRows;
         const maxNo: string = options.maxNo || '10';
         const ints: string = options.ints || 'true';
         const eigenvalues: string = options.eigenvalues || 'true';
