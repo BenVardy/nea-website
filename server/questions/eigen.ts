@@ -14,6 +14,8 @@ export default class Eigen implements IQuestion {
         const eigenvalues: string = options.eigenvalues || 'true';
         const eigenvectors: string = options.eigenvectors || 'true';
 
+        if (parseInt(maxNo) <= 1) throw new Error('Cannot get eigenvalues of matrix with only 1s');
+
         let matrix: Matrix;
         let results: QR_Result[];
 
