@@ -20,6 +20,11 @@ let pageRoot = document.createElement('div');
 pageRoot.className = 'page';
 root.appendChild(pageRoot);
 
+let footer = document.createElement('footer');
+footer.innerText = 'By Ben Vardy';
+
+root.appendChild(footer);
+
 // The main rooter for the website
 function onUrlChange(location: Location): void {
     pageRoot.innerHTML = '';
