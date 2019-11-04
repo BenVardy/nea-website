@@ -72,6 +72,15 @@ export default class QuestionsModel implements IQuestionModel {
     }
 
     /**
+     * Gets the value of an option
+     *
+     * @param name The name of the option to get
+     */
+    public getOption(name: string): string {
+        return this.options[name] || '';
+    }
+
+    /**
      * Sets the value of an option for the questions
      *
      * @param name The name of the option to set

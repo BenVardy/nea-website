@@ -5,8 +5,10 @@
     margin: 0 auto $unit;
     outline: 0;
     overflow: hidden;
-    // text-align: right;
     width: 50%;
+    // -webkit-user-select: none;
+    // -moz-user-select: none;
+    // user-select: none;
 }
 
 .calculation {

@@ -152,11 +152,16 @@ export default class Questions implements IObserver {
         for (let sliderValue of sliders) {
             optionsContainer.appendChild(new Slider({
                 ...sliderValue,
+                defaultValue: this.model.getOption(sliderValue.type),
                 changeHandler: (value: string) => this.controller.setOption(sliderValue.type, value)
             }).render());
         }
 
-        optionsContainer.appendChild(new Checkbox({ label: 'test' }).render());
+        optionsContainer.appendChild(new Checkbox({
+            label: 'Integers',
+            defualtValue: this.model.getOption('ints') === 'true',
+            onClick: (value: boolean) => this.controller.setOption('ints', `${value}`)
+        }).render());
 
         return optionsContainer;
     }

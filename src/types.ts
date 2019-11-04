@@ -77,6 +77,7 @@ export interface IQuestionModel extends IInputModel {
         [key: string]: string
     };
 
+    getOption(name: string): string;
     setOption(name: string, value: string): void;
 
     changeFocus(newFocus: number): void;

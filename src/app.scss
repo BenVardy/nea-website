@@ -23,3 +23,9 @@ footer {
 .page {
     margin: $unit;
 }
+
+.katex {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}

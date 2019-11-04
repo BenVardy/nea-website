@@ -5,7 +5,6 @@ $checkbox-size: $unit * 2;
 .checkbox-container {
     display: block;
     position: relative;
-    // padding-left: $unit;
     cursor: pointer;
     font-size: $checkbox-size;
     -webkit-user-select: none;
