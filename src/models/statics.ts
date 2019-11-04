@@ -1,4 +1,4 @@
-import { ILabelTypePair } from '../types';
+import { ILabelTypePair, ISliderInfo } from '../types';
 
 /**
  * The commands to display in the usage table
@@ -36,13 +36,20 @@ export const buttons: ILabelTypePair[] = [
     }
 ];
 
-export const sliders: ILabelTypePair[] = [
+export const sliders: ISliderInfo[] = [
     {
         label: 'Rows',
-        type: 'noRows'
+        type: 'noRows',
     },
     {
         label: 'Columns',
         type: 'noCols'
+    },
+    {
+        label: 'Max number in matrix',
+        type: 'maxNo',
+        minValue: '1',
+        maxValue: '20',
+        defaultValue: '10'
     }
 ];

@@ -1,7 +1,13 @@
 @import '../styles/vars.scss';
 
+.questions-container {
+    float: left;
+    margin: 0 auto;
+    // width: 80%;
+}
+
 .question {
-    margin-left: $unit;
+    margin-left: $unit / 2;
 }
 
 .ans-area-container {
@@ -32,6 +38,16 @@
     border-color: red;
 }
 
-.sliders-container > div {
-    width: $unit * 12;
+.options-container {
+    float: right;
+    margin: 0 $unit;
+    width: $unit * 28;
+}
+
+#options-header {
+    margin: $unit * 2 0;
+}
+
+.options-container > div {
+    margin-bottom: $unit;
 }

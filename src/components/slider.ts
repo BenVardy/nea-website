@@ -5,7 +5,7 @@ import './slider.scss';
 export default class Slider extends ComponentBase {
     public minValue: string;
     public maxValue: string;
-    public defaultNumber: string;
+    public defaultValue: string;
 
     public clickHandler: never;
     public innerHTML: never;
@@ -16,7 +16,7 @@ export default class Slider extends ComponentBase {
 
         this.minValue = options.minValue || '1';
         this.maxValue = options.maxValue || '4';
-        this.defaultNumber = options.defaultNumber || '3';
+        this.defaultValue = options.defaultValue || '3';
 
         if (this.className) this.root.classList.add(this.className);
 
@@ -25,7 +25,7 @@ export default class Slider extends ComponentBase {
         slider.setAttribute('type', 'range');
         slider.setAttribute('min', this.minValue);
         slider.setAttribute('max', this.maxValue);
-        slider.setAttribute('value', this.defaultNumber);
+        slider.setAttribute('value', this.defaultValue);
 
         this.root.appendChild(slider);
 
@@ -34,7 +34,7 @@ export default class Slider extends ComponentBase {
 
         let valueNumber = document.createElement('span');
         valueNumber.classList.add('valueNumber');
-        valueNumber.innerHTML = this.defaultNumber;
+        valueNumber.innerHTML = this.defaultValue;
 
         value.insertAdjacentElement('beforeend', valueNumber);
         this.root.appendChild(value);

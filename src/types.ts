@@ -99,6 +99,12 @@ export interface ILabelTypePair {
     type: string;
 }
 
+export interface ISliderInfo extends ILabelTypePair {
+    minValue?: string;
+    maxValue?: string;
+    defaultValue?: string;
+};
+
 export interface IAPIResult {
     type: 'matrix'|'no'|'vector';
     data: any;

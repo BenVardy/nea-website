@@ -10,6 +10,7 @@ import Calculator from '../models/calculator';
 import {buttons as importButtons, sliders} from '../models/statics';
 
 import './questions.scss';
+import Checkbox from '../components/checkbox';
 
 /**
  * The questions page
@@ -40,14 +41,17 @@ export default class Questions implements IObserver {
         this.model.addObserver(this);
         this.controller.setModel(this.model);
 
+        let questionsContainer = document.createElement('div');
+        questionsContainer.classList.add('questions-container');
+
         let buttonsContainer = document.createElement('div');
         buttonsContainer.className = 'buttons-container';
         buttonsContainer.append(...this.getQuestionButtons(importButtons));
-        this.root.appendChild(buttonsContainer);
+        questionsContainer.appendChild(buttonsContainer);
 
         this.questionElem = document.createElement('div');
         this.questionElem.className = 'question';
-        this.root.appendChild(this.questionElem);
+        questionsContainer.appendChild(this.questionElem);
 
         this.ansElemContainer = document.createElement('div');
         this.ansElemContainer.className = 'ans-area-container';
@@ -64,9 +68,10 @@ export default class Questions implements IObserver {
         });
         this.ansElemContainer.tabIndex = 0;
         this.ansElemContainer.focus();
-        this.root.appendChild(this.ansElemContainer);
+        questionsContainer.appendChild(this.ansElemContainer);
 
-        this.root.appendChild(this.getSliders());
+        this.root.appendChild(questionsContainer);
+        this.root.appendChild(this.getOptions());
 
         this.handleFocusChange = this.handleFocusChange.bind(this);
 
@@ -134,18 +139,26 @@ export default class Questions implements IObserver {
         });
     }
 
-    private getSliders(): HTMLElement {
-        let slidersContainer = document.createElement('div');
-        slidersContainer.classList.add('sliders-container');
+    private getOptions(): HTMLElement {
+        let optionsContainer = document.createElement('div');
+        optionsContainer.classList.add('options-container');
+
+        let optionsHeader = document.createElement('h3');
+        optionsHeader.id = 'options-header';
+        optionsHeader.innerHTML = 'Options';
+
+        optionsContainer.appendChild(optionsHeader);
 
         for (let sliderValue of sliders) {
-            slidersContainer.appendChild(new Slider({
-                label: sliderValue.label,
+            optionsContainer.appendChild(new Slider({
+                ...sliderValue,
                 changeHandler: (value: string) => this.controller.setOption(sliderValue.type, value)
             }).render());
         }
 
-        return slidersContainer;
+        optionsContainer.appendChild(new Checkbox({ label: 'test' }).render());
+
+        return optionsContainer;
     }
 
     /**
