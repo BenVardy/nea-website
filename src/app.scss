@@ -5,9 +5,17 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
 
 
-body {
+html, body {
     font-family: 'Roboto', sans-serif;
     margin: 0;
+    height: 100%;
+}
+
+#root {
+    box-sizing: border-box;
+    position: relative;
+    padding-bottom: 14px + $unit * 2;
+    min-height: 100%;
 }
 
 footer {

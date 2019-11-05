@@ -11,7 +11,7 @@ export const commands = {
     'Enter': 'Execute',
     'eigen(M)': 'Finds the eigenvalues and eigenvectors of M',
     'det(M)': 'Returns the determinate of M',
-    'diagonalize(M)': 'Diagonalizes M',
+    'diagonalise(M)': 'Diagonalises M',
     'transpose(M)': 'Returns the transpose of M',
     'tr(M)': 'Returns the trace of M'
 } as {

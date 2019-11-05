@@ -2,7 +2,7 @@ import { IExpr, TExprParam } from '../../types';
 import { Matrix } from '../models';
 
 export default class Diagonalize implements IExpr {
-    public symbol: string = 'diagonalize';
+    public symbol: string = 'diagonalise';
     public precedence: number = 0;
     public noParams: number = 1;
     public final: boolean = true;
