@@ -20,15 +20,6 @@ export default class Slider extends ComponentBase {
 
         if (this.className) this.root.classList.add(this.className);
 
-        let slider = document.createElement('input');
-        slider.classList.add('slider');
-        slider.setAttribute('type', 'range');
-        slider.setAttribute('min', this.minValue);
-        slider.setAttribute('max', this.maxValue);
-        slider.setAttribute('value', this.defaultValue);
-
-        this.root.appendChild(slider);
-
         let value = document.createElement('div');
         value.innerHTML = `${this.label}: `;
 
@@ -38,6 +29,15 @@ export default class Slider extends ComponentBase {
 
         value.insertAdjacentElement('beforeend', valueNumber);
         this.root.appendChild(value);
+
+        let slider = document.createElement('input');
+        slider.classList.add('slider');
+        slider.setAttribute('type', 'range');
+        slider.setAttribute('min', this.minValue);
+        slider.setAttribute('max', this.maxValue);
+        slider.setAttribute('value', this.defaultValue);
+
+        this.root.appendChild(slider);
 
         slider.addEventListener('input', () => {
             valueNumber.innerHTML = slider.value;
