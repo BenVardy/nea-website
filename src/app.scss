@@ -11,10 +11,11 @@ html, body {
     height: 100%;
 }
 
+// This is mostly here to make sure the footer works
 #root {
     box-sizing: border-box;
     position: relative;
-    padding-bottom: 14px + $unit * 2;
+    padding-bottom: 14px + $unit * 2; // Hight of footer
     min-height: 100%;
 }
 
