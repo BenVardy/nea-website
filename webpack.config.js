@@ -2,6 +2,7 @@ const path = require('path');
 
 const autoprefixer = require('autoprefixer');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
@@ -67,6 +68,12 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, 'public/index.html')
         }),
+        new CopyWebpackPlugin([
+            {
+                from: 'public',
+                ignore: ['*.html']
+            }
+        ]),
         new MiniCssExtractPlugin({
             filename: '[name].css',
             chunkFilename: '[id].css'
