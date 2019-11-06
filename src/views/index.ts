@@ -119,6 +119,18 @@ export default class Index implements IObserver {
         this.calcRoot.appendChild(calculation);
         this.calcRoot.appendChild(resultELem);
         this.calcRoot.appendChild(errorElem);
+
+        if (model.inMatrix()) {
+            try {
+                let dims: number[] = model.getCurrentMatrixDims();
+
+                let dimElem = document.createElement('span');
+                dimElem.classList.add('dims');
+                dimElem.innerText = dims.join('x');
+
+                this.calcRoot.appendChild(dimElem);
+            } catch (ex) {}
+        }
     }
 
     private staticUsage(): HTMLElement {

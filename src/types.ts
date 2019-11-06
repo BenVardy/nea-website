@@ -25,6 +25,7 @@ export interface IInputModel extends IObservable {
     cursor: number;
 
     inMatrix(): boolean;
+    getCurrentMatrixDims(): number[];
 
     addToCalc(...s: TSymbol[]): void;
 

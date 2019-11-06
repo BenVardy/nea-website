@@ -1,7 +1,7 @@
 @import '../styles/vars.scss';
 
 #calculator-root {
-    border: 1px solid black;
+    border: 1px solid rgba(0, 0, 0, 0.12);
     margin: 0 auto $unit;
     outline: 0;
     overflow: hidden;
@@ -18,6 +18,12 @@
 .error-message {
     color: red;
     margin-left: $unit / 2;
+}
+
+.dims {
+    float: right;
+    margin: $unit / 2;
+    opacity: .5;
 }
 
 .usage {
