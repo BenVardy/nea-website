@@ -2,13 +2,11 @@
 
 #calculator-root {
     border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: $unit / 2;
     margin: 0 auto $unit;
     outline: 0;
     overflow: hidden;
     width: 50%;
-    // -webkit-user-select: none;
-    // -moz-user-select: none;
-    // user-select: none;
 }
 
 .calculation {
