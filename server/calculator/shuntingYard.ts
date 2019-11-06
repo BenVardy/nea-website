@@ -1,6 +1,11 @@
 import { ICalc, IExpr, TCalc } from '../types';
 import { Stack } from './models';
 
+/**
+ * Performs the shuntingYard algorithm to change a parsed calculation from infix to postfix
+ *
+ * @param calc The infix calculation
+ */
 export default function shuntingYard(calc: TCalc[]): TCalc[] {
     let stack = new Stack<ICalc<'bracket'|'expr'>>();
     let output: TCalc[] = [];

@@ -31,7 +31,7 @@ export default class CalcController implements IController {
         if (e.ctrlKey) return;
 
         if (model.inMatrix()) {
-            if (key.match(/^[\-\d\.]$/)) {
+            if (key.match(/^[\-\d\.e]$/)) {
                 model.addToMatrix(key);
             } else {
                 switch (key) {

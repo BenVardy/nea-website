@@ -178,6 +178,30 @@ export default class Matrix {
     public subtract(matrix: Matrix): Matrix {
         return this.add(matrix.multiply(-1));
     }
+
+    public exponent(ex: number): Matrix {
+        if (ex < 1) throw new Error('Exponents of matrices only work for positive powers');
+        if (ex === 1) return this;
+
+        if (this.isSquareMatrix() && this.getDet() !== 0) {
+            try {
+                const [P, D, PInv]: Matrix[] = this.diagonalize();
+                let diagArr: number[][] = D.getArr();
+                for (let i = 0; i < D.getDim(0); i++) {
+                    diagArr[i][i] = Math.pow(D._(i, i), ex);
+                }
+
+                console.log(new Matrix(diagArr));
+
+                return P.multiply(new Matrix(diagArr)).multiply(PInv);
+            } catch (ex) {
+                console.log(ex);
+                // Do nothing as matrix has imaginary eigenvalues
+            }
+        }
+
+        return this.exponent(ex - 1);
+    }
     //#endregion
 
     /**
@@ -196,6 +220,19 @@ export default class Matrix {
         }
 
         return new Matrix(output);
+    }
+
+    /**
+     * Gets the trace of a matrix
+     */
+    public trace(): number {
+        let total: number = 0;
+
+        for (let i = 0; i < this.getDim(0); i++) {
+            total += this._(i, i);
+        }
+
+        return total;
     }
 
     /**

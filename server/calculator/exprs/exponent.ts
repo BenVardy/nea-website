@@ -28,10 +28,7 @@ export default class Exponent implements IExpr {
             if (exponent === -1) {
                 finalMatrix = matrix.invert(true);
             } else if (exponent > 0) {
-                finalMatrix = matrix.clone();
-                for (let i = 0; i < (param2.data as number); i++) {
-                    finalMatrix = finalMatrix.multiply(matrix);
-                }
+                finalMatrix = matrix.exponent(param2.data as number);
             } else {
                 throw new Error('Invalid exponent');
             }

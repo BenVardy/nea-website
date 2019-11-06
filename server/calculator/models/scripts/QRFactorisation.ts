@@ -97,6 +97,7 @@ export function QR(a: Matrix): QR_Result[] {
         }
     }
 
+    eigenvalues = [...new Set(eigenvalues)];
     eigenvalues.sort((a, b) => a - b);
 
     let results: QR_Result[] = eigenvalues.map(eigenvalue => ({

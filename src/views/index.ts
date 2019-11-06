@@ -9,7 +9,7 @@ import {commands} from '../models/statics';
 import './index.scss';
 
 /**
- * The representation of the DOM in the MVC
+ * The index page
  */
 export default class Index implements IObserver {
     // Properties
@@ -24,7 +24,9 @@ export default class Index implements IObserver {
 
     // Methods
     /**
-     * Creates a new Document
+     * Creates a new index page
+     *
+     * @param root The root of the page
      */
     public constructor(root: HTMLElement) {
         this.docRoot = root;
@@ -112,6 +114,7 @@ export default class Index implements IObserver {
 
         let errorElem: HTMLElement = document.createElement('div');
         errorElem.innerHTML = model.error;
+        errorElem.className = 'error-message';
 
         this.calcRoot.appendChild(calculation);
         this.calcRoot.appendChild(resultELem);

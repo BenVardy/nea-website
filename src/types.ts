@@ -72,9 +72,16 @@ export interface IQuestionModel extends IInputModel {
     answers: string[];
     focusedArea: number;
 
+    // Similar to IQuestionOptions on the server-side
+    options: {
+        [key: string]: string
+    };
+
+    getOption(name: string): string;
+    setOption(name: string, value: string): void;
+
     changeFocus(newFocus: number): void;
-    getQuestion(type: string, options: {[key: string]: string}): Promise<void>;
-    getFocusedArea(): IInputModel;
+    getQuestion(type: string): Promise<void>;
 }
 
 export interface IController {
@@ -84,13 +91,20 @@ export interface IController {
 
 export interface IQuestionController extends IController {
     changeFocus(newFocus: number): void;
-    getQuestion(type: string, options: {[key: string]: string}): void;
+    setOption(name: string, value: string): void;
+    getQuestion(type: string): void;
 }
 
-export interface IQuestionButton {
+export interface ILabelTypePair {
     label: string;
     type: string;
 }
+
+export interface ISliderInfo extends ILabelTypePair {
+    minValue?: string;
+    maxValue?: string;
+    defaultValue?: string;
+};
 
 export interface IAPIResult {
     type: 'matrix'|'no'|'vector';

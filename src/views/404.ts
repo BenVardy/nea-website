@@ -4,6 +4,10 @@ import Calculator from '../models/calculator';
 import InputMatrix from '../models/inputMatrix';
 import {IAPIResult, TSymbol} from '../types';
 
+/**
+ * A 404 page
+ * @param pageRoot The root of the page
+ */
 export default function Four0Four(pageRoot: HTMLElement): void {
     fetch('/api/404')
     .then(res => res.json())

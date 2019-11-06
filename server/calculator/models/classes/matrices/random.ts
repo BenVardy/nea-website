@@ -21,7 +21,7 @@ export default class RandomMatrix extends Matrix {
 
         for (let i = 0; i < rows; i++) {
             for (let j = 0; j < cols; j++) {
-                newArr[i][j] = Math.floor(Math.random() * max * multTenDecPlaces) / multTenDecPlaces;
+                newArr[i][j] = Math.floor(Math.random() * (max + 1) * multTenDecPlaces) / multTenDecPlaces;
             }
         }
 

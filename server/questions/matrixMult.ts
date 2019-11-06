@@ -1,21 +1,27 @@
 import { Matrix, RandomMatrix } from '../calculator/models';
-import { IQuestion, IQuestionOptions, IAnswer } from '../types';
+import { IAnswer, IQuestion, IQuestionOptions } from '../types';
 
 export default class MatrixMult implements IQuestion {
     public question: string;
     public answers: IAnswer[];
 
     constructor(options: IQuestionOptions) {
-        const noRows: number = options.noRows || 3;
-        const noCols: number = options.noCols || 3;
-        const maxNo: number = options.maxNo || 10;
-        const ints: boolean = options.ints || true;
+        const noRows: string = options.noRows || '3';
+        const noCols: string = options.noCols || '3';
+        const maxNo: string = options.maxNo || '10';
+        const ints: string = options.ints || 'true';
 
-        let matrices: Matrix[] = new Array(2).fill([]).map(() => new RandomMatrix(noRows, noCols, maxNo, ints ? 0 : 1));
+        let matrixA: Matrix = new RandomMatrix(
+            parseInt(noRows, 10), parseInt(noCols, 10), parseInt(maxNo, 10), ints === 'true' ? 0 : 1
+        );
 
-        let result: Matrix = matrices[0].multiply(matrices[1]);
+        let matrixB: Matrix = new RandomMatrix(
+            parseInt(noCols, 10), parseInt(noRows, 10), parseInt(maxNo, 10), ints === 'true' ? 0 : 1
+        );
 
-        this.question = `$$${matrices.map(matrix => matrix.toLatex()).join(' ')}=$$`;
+        let result: Matrix = matrixA.multiply(matrixB);
+
+        this.question = `$$${matrixA.toLatex()} ${matrixB.toLatex()}=$$`;
         this.answers = [ {
             label: '',
             value: result.toString()

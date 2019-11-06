@@ -1,7 +1,13 @@
 @import '../styles/vars.scss';
 
+.questions-container {
+    float: left;
+    margin: 0 auto;
+    // width: 80%;
+}
+
 .question {
-    margin-left: $unit;
+    margin-left: $unit / 2;
 }
 
 .ans-area-container {
@@ -30,4 +36,19 @@
 
 .incorrect-ans {
     border-color: red;
+}
+
+.options-container {
+    float: right;
+    margin: 0 $unit;
+    width: $unit * 28;
+}
+
+#options-header {
+    margin: $unit * 2 0;
+}
+
+.options-container > div {
+    font-size: $unit * 2;
+    margin-bottom: $unit;
 }

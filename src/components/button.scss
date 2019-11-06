@@ -10,11 +10,18 @@
     overflow: hidden;
     padding: $unit;
     position: relative;
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .button .ripple {
     border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.3);
+    background-color: rgba($primary-light-color, .2);
     position: absolute;
     transform: scale(0);
     animation: ripple 0.4s linear;

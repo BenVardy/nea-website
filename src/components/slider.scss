@@ -1,0 +1,37 @@
+@import '../styles/vars.scss';
+
+.slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: $unit;
+    border-radius: $unit * 2 / 3;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+
+    margin-bottom: $unit;
+}
+
+.slider:hover {
+    opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: $unit * 2;
+    height: $unit * 2;
+    border-radius: 50%;
+    background: $primary;
+    cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+    width: $unit * 2;
+    height: $unit * 2;
+    border-radius: 50%;
+    background: $primary;
+    cursor: pointer;
+}

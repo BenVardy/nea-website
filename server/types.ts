@@ -44,13 +44,13 @@ export interface ICalc<T extends keyof ICalcData> {
 }
 
 export interface IQuestionOptions {
-    noRows?: number;
-    noCols?: number;
-    maxNo?: number;
-    ints?: boolean;
+    noRows?: string;
+    noCols?: string;
+    maxNo?: string;
+    ints?: string;
     // Things for eigenvalue questions
-    eigenvalues?: boolean;
-    eigenvectors?: boolean;
+    eigenvalues?: string;
+    eigenvectors?: string;
 }
 
 export interface IQuestion {
