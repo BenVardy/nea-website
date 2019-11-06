@@ -102,7 +102,7 @@ export default class QuestionsModel implements IQuestionModel {
     public addToCalc(...s: TSymbol[]): void {
         for (let symbol of s) {
             // Don't allow multiple entries
-            if (InputMatrix.isInputMatrix(symbol) || symbol.match(/[\d\.]/)) {
+            if (InputMatrix.isInputMatrix(symbol) || symbol.match(/[\-\d\.]/)) {
                 this.getFocusedArea().addToCalc(symbol);
             }
         }
