@@ -25,6 +25,7 @@ export interface IInputModel extends IObservable {
     cursor: number;
 
     inMatrix(): boolean;
+    getCurrentMatrixDims(): number[];
 
     addToCalc(...s: TSymbol[]): void;
 
@@ -104,7 +105,7 @@ export interface ISliderInfo extends ILabelTypePair {
     minValue?: string;
     maxValue?: string;
     defaultValue?: string;
-};
+}
 
 export interface IAPIResult {
     type: 'matrix'|'no'|'vector';

@@ -82,6 +82,12 @@ export default class Calculator implements ICalcModel {
         return this._inMatrix;
     }
 
+    public getCurrentMatrixDims(): number[] {
+        if (!this.inMatrix()) throw new Error('Not in Matrix');
+
+        return this.getCurrentMatrix().getAllDims();
+    }
+
     /**
      * Adds a new observer
      * @param o The observer
@@ -218,7 +224,6 @@ export default class Calculator implements ICalcModel {
                 if (right) {
                     this.calculation.splice(this.cursor, 1);
                 } else if (this.cursor > 0) {
-                    let wasInMatrix: boolean = this._inMatrix;
                     this.calculation.splice(this.cursor - 1, 1);
                     this.navLeft();
 

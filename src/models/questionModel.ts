@@ -99,6 +99,12 @@ export default class QuestionsModel implements IQuestionModel {
         return this.getFocusedArea().inMatrix();
     }
 
+    public getCurrentMatrixDims(): number[] {
+        if (!this.inMatrix()) throw new Error('Not in matrix');
+
+        return this.getFocusedArea().getCurrentMatrixDims();
+    }
+
     public addToCalc(...s: TSymbol[]): void {
         for (let symbol of s) {
             // Don't allow multiple entries
