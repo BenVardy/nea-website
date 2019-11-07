@@ -50,6 +50,10 @@ export default class InputMatrix {
         return this.dims[n];
     }
 
+    public getAllDims(): number[] {
+        return this.dims;
+    }
+
     /**
      * Transposes the matrix
      */

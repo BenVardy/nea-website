@@ -68,9 +68,9 @@ export default class CalcController implements IController {
                 }
             }
         } else {
-            if (key.match(/^[\d\.]$/)) {
+            if (key.match(/^[\-\d\.]$/)) {
                 model.addToCalc(key);
-            } else if (key.match(/^[a-z+*/\^\-()]$/)) {
+            } else if (key.match(/^[a-z+*/\^()]$/)) {
                 model.addToCalc(key);
             } else {
                 switch (key) {
