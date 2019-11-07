@@ -6,4 +6,4 @@ cache:
     - "node_modules"
   yarn: true
 script:
-  - yarn build
+  - yarn test
