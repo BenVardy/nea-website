@@ -4,7 +4,7 @@ import { gaussianElimination, Matrix, RandomMatrix, Vector } from './calculator/
 import shuntingYard from './calculator/shuntingYard';
 import parseInput from './parseInput';
 import questions from './questions';
-import { IQuestion, IQuestionOptions, TCalc, TQuestion } from './types';
+import { IQuestionOptions, TCalc, TQuestion } from './types';
 
 const router = express.Router();
 
@@ -32,7 +32,7 @@ router.get('/', (req, res) => {
 
         res.status(200).json(result);
     } catch (ex) {
-        console.log(ex);
+        console.log(ex.message);
         res.status(400).json({message: ex.message});
     }
 });

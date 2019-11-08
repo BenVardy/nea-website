@@ -39,8 +39,6 @@ export default function parseInput(input: string): TCalc[] {
             BRACKET_REGEX
         ));
 
-    console.log(partsArr);
-
     if (!partsArr) throw new Error('Invalid Calculation');
 
     let calc: TCalc[] = partsArr.map(item => {
