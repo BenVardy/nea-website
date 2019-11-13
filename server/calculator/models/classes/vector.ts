@@ -110,7 +110,7 @@ export default class Vector {
      * Converts a matrix to a string for console
      */
     public toString(): string {
-        return `[ [ ${this.getRoundedArr().join(' ], [ ')} ] ]`;
+        return `[[${this.getRoundedArr().join('],[')}]]`;
     }
     /**
      * Returns the dimension of the vector
