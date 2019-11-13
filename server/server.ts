@@ -10,7 +10,7 @@ let app = express();
 
 app.use('/api', calcapi);
 
-const port = process.env.PORT || 3001;
+let port = process.env.port || 3001;
 
 if (process.env.NODE_ENV !== 'development') {
     console.log('Serving static files');
@@ -18,6 +18,9 @@ if (process.env.NODE_ENV !== 'development') {
     app.get('*', (req, res) => {
         res.sendFile(path.join(__dirname, '../public/index.html'));
     });
+} else {
+    // If in dev move make the port 3001
+    port = 3001;
 }
 
 app.listen(port, () => console.log(`Server listening on port ${port}`));

@@ -7,7 +7,8 @@
     "build-server": "tsc",
     "build-web": "webpack",
     "dev": "concurrently --kill-others-on-fail \"yarn dev:server\" \"webpack-dev-server\" ",
-    "dev:server": "nodemon"
+    "dev:server": "nodemon",
+    "start": "node build/server/server.js"
   },
   "devDependencies": {
     "@types/dotenv": "^6.1.1",
