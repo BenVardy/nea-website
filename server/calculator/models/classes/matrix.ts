@@ -9,7 +9,7 @@ export default class Matrix {
      * @param object The object to test
      */
     public static isMatrix(object: any): object is Matrix {
-        return (object as Matrix).getDet !== undefined;
+        return object && (object as Matrix).getDet !== undefined;
     }
 
     // Properties
