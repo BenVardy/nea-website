@@ -8,3 +8,10 @@
     padding: $unit 0;
     width: 100%;
 }
+
+.title-text {
+    font-size: $unit * 3;
+    position: absolute;
+    top: $unit * 2;
+    left: $unit * 2;
+}

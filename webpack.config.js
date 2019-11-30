@@ -7,13 +7,15 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
     mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
-    entry: './src/app.ts',
+    // entry: './src/app.ts',
+    // Changed for client-only
+    entry: './src/client-app.ts',
     module: {
         rules : [
             {
                 test: /\.ts$/,
                 use: 'ts-loader',
-                include: /src/
+                // include: /src/
             },
             {
                 test: /\.(sa|sc|c)ss$/,

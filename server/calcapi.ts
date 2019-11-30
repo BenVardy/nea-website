@@ -4,7 +4,7 @@ import { gaussianElimination, Matrix, RandomMatrix, Vector } from './calculator/
 import shuntingYard from './calculator/shuntingYard';
 import parseInput from './parseInput';
 import questions from './questions';
-import { IQuestion, IQuestionOptions, TCalc, TQuestion } from './types';
+import { IQuestionOptions, TCalc, TQuestion } from './types';
 
 const router = express.Router();
 

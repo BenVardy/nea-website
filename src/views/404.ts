@@ -4,13 +4,15 @@ import Calculator from '../models/calculator';
 import InputMatrix from '../models/inputMatrix';
 import {IAPIResult, TSymbol} from '../types';
 
+import four0Four from '../../server/offlineFunctions/404';
+
 /**
  * A 404 page
  * @param pageRoot The root of the page
  */
 export default function Four0Four(pageRoot: HTMLElement): void {
-    fetch('/api/404')
-    .then(res => res.json())
+    four0Four()
+    // .then(res => res.json())
     .then((json: IAPIResult[]) => {
         let results: TSymbol[] = json.map(res => {
             return new InputMatrix(

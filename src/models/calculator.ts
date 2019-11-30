@@ -1,6 +1,8 @@
 import { IAPIError, IAPIResult, ICalcModel, IObserver, Nav, TSymbol } from '../types';
 import InputMatrix from './inputMatrix';
 
+import calculate from '../../server/offlineFunctions/calculate';
+
 export default class Calculator implements ICalcModel {
 
     // Statics
@@ -253,11 +255,11 @@ export default class Calculator implements ICalcModel {
             return;
         }
 
-        fetch(`/api?calc=${encodeURIComponent(joinedCalc)}`)
-        .then(res => {
-            if (res.status !== 200) throw res;
-            else return res.json();
-        })
+        calculate(joinedCalc)
+        // .then(res => {
+        //     if (res.status !== 200) throw res;
+        //     else return res.json();
+        // })
         .then((json: IAPIResult[]) => {
             this.results = json.map(result => {
                 // console.log(result.type);
@@ -277,17 +279,13 @@ export default class Calculator implements ICalcModel {
             this.update();
         })
         .catch(err => {
-            if (!err.json) {
+            if (!err.message) {
                 this.error = 'Unknown Error in calculation 🤷';
-                this.update();
             } else {
-                err.json()
-                .then((json: IAPIError) => {
-                    // console.error(json.message);
-                    this.error = json.message;
-                    this.update();
-                });
+                this.error = err.message;
             }
+
+            this.update();
         });
     }
 

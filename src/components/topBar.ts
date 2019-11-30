@@ -14,28 +14,34 @@ export default class TopBar extends ComponentBase {
     public clickHandler: never;
     public changeHandler: never;
 
-    public constructor(history: History) {
+    public constructor() {
         super();
         this.root.classList.add('top-bar');
 
-        let indexButton = new Button({
-            innerHTML: 'Calculator',
-            clickHandler: () => {
-                if (history.location.pathname !== '/') {
-                    history.push('/');
-                }
-            }
-        });
-        this.root.appendChild(indexButton.render());
+        // The client-only app does not have routing :(
+        // let indexButton = new Button({
+        //     innerHTML: 'Calculator',
+        //     clickHandler: () => {
+        //         if (history.location.pathname !== '/') {
+        //             history.push('/');
+        //         }
+        //     }
+        // });
+        // this.root.appendChild(indexButton.render());
 
-        let questionsButton = new Button({
-            innerHTML: 'Questions',
-            clickHandler: () => {
-                if (history.location.pathname !== '/questions') {
-                    history.push('/questions');
-                }
-            }
-        });
-        this.root.appendChild(questionsButton.render());
+        // let questionsButton = new Button({
+        //     innerHTML: 'Questions',
+        //     clickHandler: () => {
+        //         if (history.location.pathname !== '/questions') {
+        //             history.push('/questions');
+        //         }
+        //     }
+        // });
+        // this.root.appendChild(questionsButton.render());
+
+        let text = document.createElement('span');
+        text.classList.add('title-text');
+        text.innerText = 'Matrix Calculator';
+        this.root.appendChild(text);
     }
 }

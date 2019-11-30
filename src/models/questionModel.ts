@@ -4,6 +4,8 @@ import {IAnswerArea, IAPIQuestionResult, IInputModel, IObserver, IQuestionModel,
 import Calculator from './calculator';
 import InputMatrix from './inputMatrix';
 
+import question from '../../server/offlineFunctions/question';
+
 /**
  * The model behind the questions view
  */
@@ -170,8 +172,9 @@ export default class QuestionsModel implements IQuestionModel {
      * @param options The options for the question
      */
     public async getQuestion(type: string): Promise<void> {
-        await fetch(`/api/question/${type}?${this.encodeOptions(this.options)}`)
-        .then(res => res.json())
+        // await fetch(`/api/question/${type}?${this.encodeOptions(this.options)}`)
+        await question(type, this.options)
+        // .then(res => res.json())
         .then((json: IAPIQuestionResult) => {
             this.question = json.question.replace(/\$\$(.*)\$\$/g, (match): string => {
                 return katex.renderToString(match.substring(2, match.length - 2));
