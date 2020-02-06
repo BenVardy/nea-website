@@ -1,7 +1,7 @@
 import Matrix from '../matrix';
 
 /**
- * An identity matrix of size n
+ * A random matrix
  */
 export default class RandomMatrix extends Matrix {
     // Methods
